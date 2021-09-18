@@ -1,3 +1,4 @@
+--TESTE
 type Célula = [Item]
 type Linha = (Célula, Célula, Célula, Célula, Célula, Célula, Célula, Célula)
 type Tabuleiro = (Linha, Linha, Linha, Linha, Linha, Linha, Linha, Linha)
