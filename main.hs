@@ -1,13 +1,21 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+import GHC.Base (Bool(False))
 type Célula = [Item]
 type Linha = (Célula, Célula, Célula, Célula, Célula, Célula, Célula, Célula)
 type Tabuleiro = (Linha, Linha, Linha, Linha, Linha, Linha, Linha, Linha)
-data Item = GRAMA | PAREDE | PEDRA | PRESENTE_PATINS | PRESENTE_ARREMESSO | BOMBA | JOGADOR_1 | JOGADOR_2 | JOGADOR_3 | JOGADOR_4 | JOGADOR_5 | JOGADOR_6 deriving(Eq, Show)
+data Item = GRAMA | PAREDE | PEDRA | PRESENTE_PATINS | PRESENTE_ARREMESSO | BOMBA | JOGADOR_1 | JOGADOR_2 | JOGADOR_3 | JOGADOR_4 | JOGADOR_5 | JOGADOR_6 | ITEM_NAO_ENCONTRADO deriving(Eq, Show)
 
-data Direção = NORTE | SUL | LESTE | OESTE deriving(Eq, Show)
+data Direcao = NORTE | SUL | LESTE | OESTE deriving(Eq, Show)
 type Identificador = Int
 type Localizacao = (Int, Int)
 type Capacidade = (Item, Int)
-type Jogador = (Identificador, Localizacao, Direção, Capacidade)
+type Jogador = (Identificador, Localizacao, Direcao, Capacidade)
+
+--linha1 = (coluna11, coluna12, coluna13)
+
+--linha2 = (coluna21, coluna22, coluna23)
+
+--linha3 = (coluna31, coluna32, coluna33)
 
 linha1 = (coluna11, coluna12, coluna13, coluna14, coluna15, coluna16, coluna17, coluna18)
 
@@ -92,8 +100,8 @@ coluna68 = [PEDRA]
 coluna71 = [PEDRA]
 coluna72 = [GRAMA, BOMBA]
 coluna73 = [GRAMA]
-coluna74 = [GRAMA, PRESENTE_ARREMESSO]
-coluna75 = [GRAMA]
+coluna74 = [GRAMA, PRESENTE_ARREMESSO, JOGADOR_4]
+coluna75 = [GRAMA, JOGADOR_3]
 coluna76 = [GRAMA]
 coluna77 = [GRAMA]
 coluna78 = [PEDRA]
@@ -107,6 +115,18 @@ coluna85 = [PEDRA]
 coluna86 = [PEDRA]
 coluna87 = [PEDRA]
 coluna88 = [PEDRA]
+
+identificador:: Jogador -> Identificador
+identificador (identificador,_,_,_) = identificador
+
+localizacao:: Jogador -> Localizacao
+localizacao (_,localizacao,_,_) = localizacao
+
+direcao:: Jogador -> Direcao
+direcao (_,_,direcao,_) = direcao
+
+capacidade:: Jogador -> Capacidade
+capacidade (_,_,_,capacidade) = capacidade
 
 verificaSeÉBuraco:: Célula -> Bool
 verificaSeÉBuraco = null
@@ -122,4 +142,94 @@ verificaJogador célula jogador = verificaGrama célula && head(tail célula) ==
 
 tabuleiro:: Tabuleiro
 tabuleiro = (linha1, linha2, linha3, linha4, linha5, linha6, linha7, linha8)
+
+getLinha:: Tabuleiro -> Int -> Linha
+getLinha (linha,_,_,_,_,_,_,_) 1 = linha
+getLinha (_,linha,_,_,_,_,_,_) 2 = linha
+getLinha (_,_,linha,_,_,_,_,_) 3 = linha
+getLinha (_,_,_,linha,_,_,_,_) 4 = linha
+getLinha (_,_,_,_,linha,_,_,_) 5 = linha
+getLinha (_,_,_,_,_,linha,_,_) 6 = linha
+getLinha (_,_,_,_,_,_,linha,_) 7 = linha
+getLinha (_,_,_,_,_,_,_,linha) 8 = linha
+
+getCélula:: Linha -> Int -> Célula
+getCélula (célula,_,_,_,_,_,_,_) 1 = célula
+getCélula (_,célula,_,_,_,_,_,_) 2 = célula
+getCélula (_,_,célula,_,_,_,_,_) 3 = célula
+getCélula (_,_,_,célula,_,_,_,_) 4 = célula
+getCélula (_,_,_,_,célula,_,_,_) 5 = célula
+getCélula (_,_,_,_,_,célula,_,_) 6 = célula
+getCélula (_,_,_,_,_,_,célula,_) 7 = célula
+getCélula (_,_,_,_,_,_,_,célula) 8 = célula
+
+percorreLinhas:: Tabuleiro -> Int -> Item -> Item
+percorreLinhas tabuleiro iterador item
+    | iterador == 8 && not(procuraItemNasColunas linha 0 item) = ITEM_NAO_ENCONTRADO
+    | procuraItemNasColunas linha 0 item = item
+    | otherwise = percorreLinhas tabuleiro (iterador+1) item
+    where
+        linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
+
+procuraItemNasColunas:: Linha -> Int -> Item -> Bool
+procuraItemNasColunas linha iterador item
+    | iterador == 8 && not(validaItemExisteNaCélula célula item) = False 
+    | validaItemExisteNaCélula célula item = True
+    | otherwise = procuraItemNasColunas linha (iterador+1) item
+    where
+        célula = if iterador == 8 then getCélula linha (iterador-1) else getCélula linha (iterador+1)
+
+dadoCoordenadaPegarOsItens:: Tabuleiro -> Localizacao -> Célula
+dadoCoordenadaPegarOsItens tabuleiro (coordenadaX, coordenadaY) = resultado
+    where
+        linha = getLinha tabuleiro coordenadaX
+        célula = getCélula linha coordenadaY
+        resultado = célula
+
+
+pegaLocalizacaoJogador:: Tabuleiro -> Int -> Item -> Localizacao
+pegaLocalizacaoJogador tabuleiro iterador item
+    | iterador == 8 && not(procuraItemNasColunas linha 0 item) = (-1,-1)
+    | procuraItemNasColunas linha 0 item = coordenadas
+    | otherwise = pegaLocalizacaoJogador tabuleiro (iterador+1) item
+    where
+        linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
+        coordenadas = pegaCoordenadasDeUmItemVarrendoColunas linha 0 (iterador+1) item
+
+pegaCoordenadasDeUmItemVarrendoColunas:: Linha -> Int -> Int -> Item -> Localizacao
+pegaCoordenadasDeUmItemVarrendoColunas linha iterador numeroLinha item
+    | iterador == 8 && not(validaItemExisteNaCélula célula item) = (-1,-1) 
+    | validaItemExisteNaCélula célula item && numeroLinha == 0 = (numeroLinha+1, iterador+1)
+    | validaItemExisteNaCélula célula item = (numeroLinha, iterador+1) 
+    | otherwise = pegaCoordenadasDeUmItemVarrendoColunas linha (iterador+1) numeroLinha item
+    where
+        célula = if iterador == 8 then getCélula linha (iterador-1) else getCélula linha (iterador+1)
+
+validaItemExisteNaCélula:: Célula -> Item -> Bool
+validaItemExisteNaCélula célula item = item `elem` célula
+
+pegaItem:: Célula -> Item -> Item
+pegaItem célula item
+    | item `elem` célula = item
+    | otherwise = ITEM_NAO_ENCONTRADO
+
+{-
+
+>>>getLinha tabuleiro 5
+([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])
+
+>>>procuraItemNasColunas (getLinha tabuleiro 5) 0
+[PEDRA]
+
+-}
+
+
+
+
+--type Célula = [Item]
+--type Linha = (Célula, Célula, Célula, Célula, Célula, Célula, Célula, Célula)
+--type Tabuleiro = (Linha, Linha, Linha, Linha, Linha, Linha, Linha, Linha)
+--data Item = GRAMA | PAREDE | PEDRA | PRESENTE_PATINS | PRESENTE_ARREMESSO | BOMBA | JOGADOR_1 | JOGADOR_2 | JOGADOR_3 | JOGADOR_4 | JOGADOR_5 | JOGADOR_6 deriving(Eq, Show)
+
+
 
