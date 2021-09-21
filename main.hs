@@ -1,5 +1,4 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-import GHC.Base (Bool(False))
 type Célula = [Item]
 type Linha = (Célula, Célula, Célula, Célula, Célula, Célula, Célula, Célula)
 type Tabuleiro = (Linha, Linha, Linha, Linha, Linha, Linha, Linha, Linha)
@@ -8,14 +7,9 @@ data Item = GRAMA | PAREDE | PEDRA | PRESENTE_PATINS | PRESENTE_ARREMESSO | BOMB
 data Direcao = NORTE | SUL | LESTE | OESTE deriving(Eq, Show)
 type Identificador = Int
 type Localizacao = (Int, Int)
-type Capacidade = (Item, Int)
-type Jogador = (Identificador, Localizacao, Direcao, Capacidade)
+type Capacidades = [(Item, Int)]
+type Jogador = (Identificador, Localizacao, Direcao, Capacidades)
 
---linha1 = (coluna11, coluna12, coluna13)
-
---linha2 = (coluna21, coluna22, coluna23)
-
---linha3 = (coluna31, coluna32, coluna33)
 
 linha1 = (coluna11, coluna12, coluna13, coluna14, coluna15, coluna16, coluna17, coluna18)
 
@@ -125,7 +119,7 @@ localizacao (_,localizacao,_,_) = localizacao
 direcao:: Jogador -> Direcao
 direcao (_,_,direcao,_) = direcao
 
-capacidade:: Jogador -> Capacidade
+capacidade:: Jogador -> Capacidades
 capacidade (_,_,_,capacidade) = capacidade
 
 verificaSeÉBuraco:: Célula -> Bool
@@ -173,7 +167,7 @@ percorreLinhas tabuleiro iterador item
 
 procuraItemNasColunas:: Linha -> Int -> Item -> Bool
 procuraItemNasColunas linha iterador item
-    | iterador == 8 && not(validaItemExisteNaCélula célula item) = False 
+    | iterador == 8 && not(validaItemExisteNaCélula célula item) = False
     | validaItemExisteNaCélula célula item = True
     | otherwise = procuraItemNasColunas linha (iterador+1) item
     where
@@ -185,6 +179,23 @@ dadoCoordenadaPegarOsItens tabuleiro (coordenadaX, coordenadaY) = resultado
         linha = getLinha tabuleiro coordenadaX
         célula = getCélula linha coordenadaY
         resultado = célula
+
+pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao:: Localizacao -> Direcao -> Localizacao
+pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao (linha, coluna) direcao
+    | direcao == NORTE = (linha-1, coluna)
+    | direcao == SUL = (linha+1, coluna)
+    | direcao == LESTE = (linha, coluna+1)
+    | otherwise = (linha, coluna-1)
+
+
+--atualizaCélula:: Tabuleiro -> Item -> Direcao -> Tabuleiro
+--atualizaCélula tabuleiro jogador direcao = resultado
+--    where 
+--        localizacaoJogador = pegaLocalizacaoJogador tabuleiro 0 jogador
+--        localizacaoQueOJogadorQuerIr = pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao localizacaoJogador direcao
+--        itensDaPosicaoQueOJogadorQuerIr = dadoCoordenadaPegarOsItens tabuleiro localizacaoQueOJogadorQuerIr
+
+--        resultado 
 
 
 pegaLocalizacaoJogador:: Tabuleiro -> Int -> Item -> Localizacao
@@ -198,9 +209,9 @@ pegaLocalizacaoJogador tabuleiro iterador item
 
 pegaCoordenadasDeUmItemVarrendoColunas:: Linha -> Int -> Int -> Item -> Localizacao
 pegaCoordenadasDeUmItemVarrendoColunas linha iterador numeroLinha item
-    | iterador == 8 && not(validaItemExisteNaCélula célula item) = (-1,-1) 
+    | iterador == 8 && not(validaItemExisteNaCélula célula item) = (-1,-1)
     | validaItemExisteNaCélula célula item && numeroLinha == 0 = (numeroLinha+1, iterador+1)
-    | validaItemExisteNaCélula célula item = (numeroLinha, iterador+1) 
+    | validaItemExisteNaCélula célula item = (numeroLinha, iterador+1)
     | otherwise = pegaCoordenadasDeUmItemVarrendoColunas linha (iterador+1) numeroLinha item
     where
         célula = if iterador == 8 then getCélula linha (iterador-1) else getCélula linha (iterador+1)
@@ -213,23 +224,52 @@ pegaItem célula item
     | item `elem` célula = item
     | otherwise = ITEM_NAO_ENCONTRADO
 
+jogador1:: Jogador
+jogador1 = (1, pegaLocalizacaoJogador tabuleiro 0 JOGADOR_1, NORTE, [])
+
+convertJogadorStringToItem:: String -> Item
+convertJogadorStringToItem jogador 
+    | jogador == "JOGADOR_1" = JOGADOR_1
+    | jogador == "JOGADOR_2" = JOGADOR_2
+    | jogador == "JOGADOR_3" = JOGADOR_3
+    | jogador == "JOGADOR_4" = JOGADOR_4
+    | jogador == "JOGADOR_5" = JOGADOR_5
+    | otherwise = JOGADOR_6
+
+
+atualizaJogador:: Jogador -> Capacidades -> Jogador
+atualizaJogador jogador capacidades = resultado
+    where
+        direcao1 = direcao jogador
+        identificador1 = identificador jogador
+        jogadorIdentificador = convertJogadorStringToItem ("JOGADOR_"++show identificador1)
+        localizacaoJogador = pegaLocalizacaoJogador tabuleiro 0 jogadorIdentificador
+        resultado = (identificador1, localizacaoJogador, direcao1, capacidades)
+
+
 {-
 
 >>>getLinha tabuleiro 5
 ([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])
 
 >>>procuraItemNasColunas (getLinha tabuleiro 5) 0
-[PEDRA]
+No instance for (Show (Item -> Bool))
+  arising from a use of ‘evalPrint’
+  (maybe you haven't applied a function to enough arguments?)
+
+>>>pegaLocalizacaoJogador tabuleiro 0 JOGADOR_1
+(5,2)
+
+>>>pegaLocalizacaoJogador tabuleiro 0 JOGADOR_4
+(7,4)
+
+>>>pegaItem (getCélula (getLinha tabuleiro 5) 2) JOGADOR_1
+JOGADOR_1
+
+>>>pegaItem (getCélula (getLinha tabuleiro 5) 5) JOGADOR_1
+ITEM_NAO_ENCONTRADO
 
 -}
-
-
-
-
---type Célula = [Item]
---type Linha = (Célula, Célula, Célula, Célula, Célula, Célula, Célula, Célula)
---type Tabuleiro = (Linha, Linha, Linha, Linha, Linha, Linha, Linha, Linha)
---data Item = GRAMA | PAREDE | PEDRA | PRESENTE_PATINS | PRESENTE_ARREMESSO | BOMBA | JOGADOR_1 | JOGADOR_2 | JOGADOR_3 | JOGADOR_4 | JOGADOR_5 | JOGADOR_6 deriving(Eq, Show)
 
 
 
