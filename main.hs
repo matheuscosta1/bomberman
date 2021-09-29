@@ -213,16 +213,46 @@ montaNovoTabuleiroBaseadoNaNovaLinha (linha1, linha2, linha3, linha4, linha5, li
 montaNovoTabuleiroBaseadoNaNovaLinha (linha1, linha2, linha3, linha4, linha5, linha6, linha7, linha8) novaLinha 7 = (linha1, linha2, linha3, linha4, linha5, linha6, novaLinha, linha8)
 montaNovoTabuleiroBaseadoNaNovaLinha (linha1, linha2, linha3, linha4, linha5, linha6, linha7, linha8) novaLinha 8 = (linha1, linha2, linha3, linha4, linha5, linha6, linha7, novaLinha)
 
+adicionaJogadorNaNovaCelulaERemoveItens:: Célula -> Item -> Célula
+adicionaJogadorNaNovaCelulaERemoveItens [] jogador = []
+adicionaJogadorNaNovaCelulaERemoveItens (x:xs) jogador = x:[jogador]
+    --TODO: validar se for algum item do tipo PRESENTE_PATINS ou PRESENTE_ARREMESSO, guardar no inventário do jogador
+    --TODO: se a célula estiver vazia, o jogador morre
+     
+
+atualizaCélulaNovaPosicaoDoJogador:: Linha -> Item -> Int ->  Linha
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 1 = (adicionaJogadorNaNovaCelulaERemoveItens celula1 jogador, celula2 , celula3, celula4, celula5, celula6, celula7, celula8)
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 2 = (celula1, adicionaJogadorNaNovaCelulaERemoveItens celula2 jogador, celula3, celula4, celula5, celula6, celula7, celula8)
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 3 = (celula1, celula2 , adicionaJogadorNaNovaCelulaERemoveItens celula3 jogador, celula4, celula5, celula6, celula7, celula8)
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 4 = (celula1, celula2 , celula3, adicionaJogadorNaNovaCelulaERemoveItens celula4 jogador, celula5, celula6, celula7, celula8)
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 5 = (celula1, celula2 , celula3, celula4, adicionaJogadorNaNovaCelulaERemoveItens celula5 jogador, celula6, celula7, celula8)
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 6 = (celula1, celula2 , celula3, celula4, celula5, adicionaJogadorNaNovaCelulaERemoveItens celula6 jogador, celula7, celula8)
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 7 = (celula1, celula2 , celula3, celula4, celula5, celula6, adicionaJogadorNaNovaCelulaERemoveItens celula7 jogador, celula8)
+atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 8 = (celula1, celula2 , celula3, celula4, celula5, celula6, celula7, adicionaJogadorNaNovaCelulaERemoveItens celula8 jogador)
+
 --atualizaTabuleiro:: Linha -> 
-atualizaCélula:: Tabuleiro -> Item -> Direcao -> Tabuleiro
-atualizaCélula tabuleiro jogador direcao = resultado
+movimentaJogador:: Tabuleiro -> Item -> Direcao -> Tabuleiro
+movimentaJogador tabuleiro jogador direcao = resultado
     where 
         (linhaQueOJogadorEstá, colunaQueOJogadorEstá) = pegaLocalizacaoJogador tabuleiro 0 jogador
-        localizacaoQueOJogadorQuerIr = pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao (linhaQueOJogadorEstá, colunaQueOJogadorEstá) direcao
+
+        (linhaQueOJogadorQuerIr, colunaQueOJogadorQuerIr) = pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao (linhaQueOJogadorEstá, colunaQueOJogadorEstá) direcao
+
+        --TODO: validar se o jogador pode movimentar ou não. Se for bomba ou pedra, não pode mover
+        itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr = dadoCoordenadaPegarOsItens tabuleiro (linhaQueOJogadorQuerIr, colunaQueOJogadorQuerIr)
+
         linhaJogador = getLinha tabuleiro linhaQueOJogadorEstá
         novaLinha = atualizaCélulaJogador linhaJogador jogador colunaQueOJogadorEstá
-        --todo: falta atualizar a célula que o jogador irá chegar (nova posicao). já está funcionando atualizar 
-        resultado = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiro novaLinha linhaQueOJogadorEstá
+
+        tabuleiroComAPosicaoAntigaDoJogadorAtualizada = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiro novaLinha linhaQueOJogadorEstá
+
+        linhaComANovaPosicaoJogador = getLinha tabuleiroComAPosicaoAntigaDoJogadorAtualizada linhaQueOJogadorQuerIr
+        novaLinhaComANovaPosicaoDoJogador = atualizaCélulaNovaPosicaoDoJogador linhaComANovaPosicaoJogador jogador colunaQueOJogadorQuerIr
+
+        tabuleiroComANovaPosicaoDoJogadorAtualizada = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiroComAPosicaoAntigaDoJogadorAtualizada novaLinhaComANovaPosicaoDoJogador linhaQueOJogadorQuerIr
+
+        --todo: falta atualizar a célula que o jogador irá chegar (nova posicao). já está funcionando atualizar (FEITO)
+        resultado = tabuleiroComANovaPosicaoDoJogadorAtualizada
 
 
 pegaLocalizacaoJogador:: Tabuleiro -> Int -> Item -> Localizacao
