@@ -13,12 +13,18 @@ spec = do
         describe "Pega Linha 5" $ do
                 it "Valida se a linha 5 do tabuleiro é ([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])" $
                         getLinha tabuleiroVálido 5 `shouldBe` ([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])
+        describe "Pega Célula 2 da linha 5" $ do
+                it "Valida se a linha 5 do tabuleiro é ([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])" $
+                        getCélula (getLinha tabuleiroVálido 5) 2 `shouldBe` [GRAMA,JOGADOR_1]
         describe "Cria tabuleiro" $ do
                 it "Valida criação do tabuleiro" $
                         criaTabuleiro tabuleiroVálido `shouldBe` tabuleiroVálido
         describe "Cria tabuleiro inválido" $ do
                 it "Lança exceção ao criar tabuleiro inválido" $
                         evaluate(criaTabuleiro tabuleiroInválido) `shouldThrow` errorCall "Tabuleiro inválido"
+        describe "Varre colunas" $ do
+                it "Pega as coordenadas de um item varrendo as colunas de uma linha" $
+                        pegaCoordenadasDeUmItemVarrendoColuna (getLinha tabuleiroVálido 5) 0 5 JOGADOR_1 `shouldBe` (5,2)
         describe "Pega posição do jogador 1" $ do
                 it "Valida se a posição do jogador 1 é (5,2)" $
                         pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1 `shouldBe` (5,2)
@@ -105,8 +111,37 @@ spec = do
                         validaTabuleiro tabuleiroInválido `shouldBe` False
         describe "Valida se no tabuleiro há alguma célula inválida" $ do
                 it "Verifica se tem célula inválida em um tabuleiro válido" $
-                        validaTabuleiro tabuleiroVálido `shouldBe` True 
-        
-        --describe "Movimenta jogador" $ do
-        --        it "Valida se quando o jogador 1 mover para o Norte ele deixa a sua posição (5,2) e assume uma nova (4,2)" $
+                        validaTabuleiro tabuleiroVálido `shouldBe` True
+        describe "Move jogador 1" $ do
+                it "Move jogador 1 para a nova célula e remove itens" $
+                        adicionaJogadorNaNovaCelulaERemoveItens [GRAMA, PRESENTE_ARREMESSO] JOGADOR_1 `shouldBe` [GRAMA, JOGADOR_1]
+        describe "Move jogador 1" $ do
+                it "Remove jogador 1 da antiga posição" $
+                        removeJogadorCélula [GRAMA, JOGADOR_1] JOGADOR_1 `shouldBe` [GRAMA]
+        describe "Move jogador 1" $ do
+                it "Atualiza célula 2 da linha 5 e retorna uma nova linha removendo o jogador da atual posição (5,2) e movendo par ao NORTE (4,2)" $
+                        atualizaCélulaJogador (getLinha tabuleiroVálido 5) JOGADOR_1 2 `shouldBe` ([PEDRA],[GRAMA],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])
+        describe "Move jogador 1" $ do
+                it "Monta um novo tabuleiro baseado na célula da linha em que o jogador 1 irá sair" $
+                        montaNovoTabuleiroBaseadoNaNovaLinha tabuleiroVálido ( atualizaCélulaJogador (getLinha tabuleiroVálido 5) JOGADOR_1 2 ) 5  `shouldBe` (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,PRESENTE_ARREMESSO],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA,JOGADOR_2],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO,JOGADOR_4],[GRAMA,JOGADOR_3],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]))
+        describe "Move jogador 1" $ do
+                it "Atualiza célula com a nova posição do jogador (chegando na posição (4,2)) " $
+                        atualizaCélulaNovaPosicaoDoJogador (getLinha tabuleiroVálido 4) JOGADOR_1 2 `shouldBe` ([PEDRA],[GRAMA,JOGADOR_1],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA,JOGADOR_2],[PEDRA])
+        describe "Move jogador 1" $ do
+                it "Monta um novo tabuleiro baseado na célula da linha em que o jogador 1 irá chegar (nova posição)" $
+                        montaNovoTabuleiroBaseadoNaNovaLinha tabuleiroVálido (atualizaCélulaNovaPosicaoDoJogador (getLinha tabuleiroVálido 4) JOGADOR_1 2) 4 `shouldBe` (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA,JOGADOR_2],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO,JOGADOR_4],[GRAMA,JOGADOR_3],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]))
+        describe "Move jogador 1" $ do
+                it "Valida se quando o jogador 1 mover para o Norte ele deixa a sua posição (5,2) e assume uma nova (4,2)" $
+                        movimentaJogador tabuleiroVálido JOGADOR_1 NORTE `shouldBe` (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA,JOGADOR_2],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO,JOGADOR_4],[GRAMA,JOGADOR_3],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]))
+        describe "Atualiza jogador 1" $ do
+                it "Atualiza capacidades do jogador 1" $
+                        atualizaJogador jogador1 [(PRESENTE_ARREMESSO, 1)] `shouldBe` (1, (5,2), NORTE, [(PRESENTE_ARREMESSO, 1)])
+        describe "Fim de jogo" $ do
+                it "Valida se é fim de jogo" $
+                        éFimDeJogo tabuleiroVálido `shouldBe` False
+        describe "Fim de jogo" $ do
+                it "Valida se é fim de jogo" $
+                        éFimDeJogo (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA])) `shouldBe` True
+
+
                         
