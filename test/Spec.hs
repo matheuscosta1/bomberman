@@ -6,6 +6,7 @@ import Control.Exception (evaluate)
 main:: IO ()
 main = hspec spec
 
+--jogadorNaNovaPosicao = 
 
 spec::Spec
 spec = do
@@ -18,3 +19,9 @@ spec = do
         describe "Cria tabuleiro inválido" $ do
                 it "Lança exceção ao criar tabuleiro inválido" $
                         evaluate(criaTabuleiro tabuleiroInválido) `shouldThrow` errorCall "Tabuleiro inválido"
+        describe "Pega posição do jogador 1" $ do
+                it "Valida se a posição do jogador é (5,2)" $
+                        pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1 `shouldBe` (5,2)
+        --describe "Movimenta jogador" $ do
+        --        it "Valida se quando o jogador 1 mover para o Norte ele deixa a sua posição (5,2) e assume uma nova (4,2)" $
+                        
