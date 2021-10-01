@@ -1,5 +1,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-{-# OPTIONS_GHC -Wno-typed-holes #-}
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+--Definições de tipos de Dados que compõem o jogo Bomberman
+
 type Célula = [Item]
 type Linha = (Célula, Célula, Célula, Célula, Célula, Célula, Célula, Célula)
 type Tabuleiro = (Linha, Linha, Linha, Linha, Linha, Linha, Linha, Linha)
@@ -11,7 +13,8 @@ type Localizacao = (Int, Int)
 type Capacidades = [(Item, Int)]
 type Jogador = (Identificador, Localizacao, Direcao, Capacidades)
 
-
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+--Criação das Linhas e Colunas do Tabuleiro
 linha1 = (coluna11, coluna12, coluna13, coluna14, coluna15, coluna16, coluna17, coluna18)
 
 linha2 = (coluna21, coluna22, coluna23, coluna24, coluna25, coluna26, coluna27, coluna28)
@@ -43,7 +46,7 @@ coluna18 = [PEDRA]
 coluna21 = [PEDRA]
 coluna22 = [GRAMA]
 coluna23 = [GRAMA]
-coluna24 = [PRESENTE_PATINS]
+coluna24 = [GRAMA, PRESENTE_PATINS]
 coluna25 = [GRAMA]
 coluna26 = [GRAMA]
 coluna27 = [GRAMA]
@@ -110,18 +113,8 @@ coluna85 = [PEDRA]
 coluna86 = [PEDRA]
 coluna87 = [PEDRA]
 coluna88 = [PEDRA]
-
-identificador:: Jogador -> Identificador
-identificador (identificador,_,_,_) = identificador
-
-localizacao:: Jogador -> Localizacao
-localizacao (_,localizacao,_,_) = localizacao
-
-direcao:: Jogador -> Direcao
-direcao (_,_,direcao,_) = direcao
-
-capacidade:: Jogador -> Capacidades
-capacidade (_,_,_,capacidade) = capacidade
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+--Funções para validação e criação do Tabuleiro
 
 verificaSeÉBuraco:: Célula -> Bool
 verificaSeÉBuraco = null
@@ -132,8 +125,8 @@ verificaGrama célula = head célula == GRAMA
 verificaPresente:: Célula -> Bool
 verificaPresente célula = resultado
     where
-        caudaCélula = head(tail célula)
-        resultado = verificaGrama célula && caudaCélula == PRESENTE_ARREMESSO || caudaCélula == PRESENTE_PATINS
+        caudaCélula = if null(tail célula) then head célula else head(tail célula)
+        resultado = verificaGrama célula && (caudaCélula == PRESENTE_ARREMESSO || caudaCélula == PRESENTE_PATINS)
 
 verificaPedra:: Célula -> Bool
 verificaPedra célula = head célula == PEDRA
@@ -158,7 +151,7 @@ verificaParede célula = resultado
     where
     cabeca = head(tail célula)
     cauda = head(tail(tail célula))
-    resultado = paredeEstáNaBase célula || paredeEstáSobreGrama célula || cabeca == PRESENTE_ARREMESSO || head(tail célula) == PRESENTE_PATINS && cauda == PAREDE
+    resultado = paredeEstáNaBase célula || paredeEstáSobreGrama célula || cabeca == PRESENTE_ARREMESSO || (head(tail célula) == PRESENTE_PATINS && cauda == PAREDE)
 
 validaBomba:: Célula -> Bool
 validaBomba célula = resultado
@@ -180,49 +173,53 @@ validaCélula célula
     | JOGADOR_6 `elem` célula = verificaJogador célula JOGADOR_6
     | GRAMA `elem` célula = verificaGrama célula
     | otherwise = verificaSeÉBuraco célula
-   
+
+percorreLinhasParaValidarTabuleiro:: Tabuleiro -> Int -> [Bool]
+percorreLinhasParaValidarTabuleiro tabuleiro iterador
+    | iterador == 8 = []
+    | otherwise = validaCélulas ++ percorreLinhasParaValidarTabuleiro tabuleiro (iterador+1)
+    where
+        linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
+        validaCélulas = percorreCélulasParaValidarTabuleiro linha 0
+
 
 percorreCélulasParaValidarTabuleiro:: Linha -> Int -> [Bool]
 percorreCélulasParaValidarTabuleiro linha iterador
-    | iterador == 8 && not(validaCélula célula) = [False]
-    | validaCélula célula = [True]
-    | otherwise = percorreCélulasParaValidarTabuleiro linha (iterador+1)
+    | iterador == 8 = []
+    | validaCélula célula = True : percorreCélulasParaValidarTabuleiro linha (iterador+1)
+    | otherwise = False : percorreCélulasParaValidarTabuleiro linha (iterador+1)
     where
         célula = if iterador == 8 then getCélula linha (iterador-1) else getCélula linha (iterador+1)
-        
 
-
-
-
-splitTodos :: [Char] -> Char -> [[Char]]
-splitTodos "" a = []
-splitTodos lista caractere = takeWhile (/= caractere) lista : splitTodos (drop 1 (dropWhile (/= caractere) lista)) caractere
-
-{--
-
-
+validaTabuleiro:: Tabuleiro -> Bool
+validaTabuleiro tabuleiro = and (percorreLinhasParaValidarTabuleiro tabuleiro 0)
 
 criaTabuleiro:: Tabuleiro -> Tabuleiro
 criaTabuleiro tabuleiro = if validaTabuleiro tabuleiro then tabuleiro else error "Tabuleiro inválido"
 
-
-validaTabuleiro:: Tabuleiro -> Bool
-validaTabuleiro tabuleiro = resultado
-    where
-
-
-percorreLinhasParaValidarTabuleiro:: Tabuleiro -> Int -> [Bool]
-percorreLinhasParaValidarTabuleiro tabuleiro iterador
-    | 
-    | otherwise = percorreCélulasParaValidarTabuleiro tabuleiro (iterador+1)
-    where
-        linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
-
---}
-
-
 tabuleiro:: Tabuleiro
 tabuleiro = (linha1, linha2, linha3, linha4, linha5, linha6, linha7, linha8)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Funções para manipular o Jogador e o Tabuleiro
+
+identificador:: Jogador -> Identificador
+identificador (identificador,_,_,_) = identificador
+
+localizacao:: Jogador -> Localizacao
+localizacao (_,localizacao,_,_) = localizacao
+
+direcao:: Jogador -> Direcao
+direcao (_,_,direcao,_) = direcao
+
+capacidade:: Jogador -> Capacidades
+capacidade (_,_,_,capacidade) = capacidade
+
+jogadores:: [Item]
+jogadores = [JOGADOR_1, JOGADOR_2, JOGADOR_3, JOGADOR_4, JOGADOR_5, JOGADOR_6]
+
+jogador1:: Jogador
+jogador1 = (1, pegaLocalizacaoJogador tabuleiro 0 JOGADOR_1, NORTE, [])
 
 getLinha:: Tabuleiro -> Int -> Linha
 getLinha (linha,_,_,_,_,_,_,_) 1 = linha
@@ -330,9 +327,6 @@ pegaItem célula item
     | item `elem` célula = item
     | otherwise = ITEM_NAO_ENCONTRADO
 
-jogador1:: Jogador
-jogador1 = (1, pegaLocalizacaoJogador tabuleiro 0 JOGADOR_1, NORTE, [])
-
 convertJogadorStringToItem:: String -> Item
 convertJogadorStringToItem jogador
     | jogador == "JOGADOR_1" = JOGADOR_1
@@ -385,9 +379,6 @@ removeJogadorCélula:: Célula -> Item -> Célula
 removeJogadorCélula [] jogador = []
 removeJogadorCélula (x:xs) jogador = if jogador == x then removeJogadorCélula xs jogador else x:removeJogadorCélula xs jogador
 
-jogadores:: [Item]
-jogadores = [JOGADOR_1, JOGADOR_2, JOGADOR_3, JOGADOR_4, JOGADOR_5, JOGADOR_6]
-
 percorreJogadores:: Tabuleiro -> [Item] -> [Item]
 percorreJogadores tabuleiro [] = []
 percorreJogadores tabuleiro (x:xs) = resultado
@@ -397,6 +388,8 @@ percorreJogadores tabuleiro (x:xs) = resultado
 
 éFimDeJogo:: Tabuleiro -> Bool
 éFimDeJogo tabuleiro = length(percorreJogadores tabuleiro jogadores) == 1
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 {-
 
