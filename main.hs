@@ -12,104 +12,104 @@ type Capacidades = [(Item, Int)]
 type Jogador = (Identificador, Localizacao, Direcao, Capacidades)
 
 
-linha1 = (colunaQueOJogadorEstá11, colunaQueOJogadorEstá12, colunaQueOJogadorEstá13, colunaQueOJogadorEstá14, colunaQueOJogadorEstá15, colunaQueOJogadorEstá16, colunaQueOJogadorEstá17, colunaQueOJogadorEstá18)
+linha1 = (coluna11, coluna12, coluna13, coluna14, coluna15, coluna16, coluna17, coluna18)
 
-linha2 = (colunaQueOJogadorEstá21, colunaQueOJogadorEstá22, colunaQueOJogadorEstá23, colunaQueOJogadorEstá24, colunaQueOJogadorEstá25, colunaQueOJogadorEstá26, colunaQueOJogadorEstá27, colunaQueOJogadorEstá28)
+linha2 = (coluna21, coluna22, coluna23, coluna24, coluna25, coluna26, coluna27, coluna28)
 
-linha3 = (colunaQueOJogadorEstá31, colunaQueOJogadorEstá32, colunaQueOJogadorEstá33, colunaQueOJogadorEstá34, colunaQueOJogadorEstá35, colunaQueOJogadorEstá36, colunaQueOJogadorEstá37, colunaQueOJogadorEstá38)
+linha3 = (coluna31, coluna32, coluna33, coluna34, coluna35, coluna36, coluna37, coluna38)
 
-linha4 = (colunaQueOJogadorEstá41, colunaQueOJogadorEstá42, colunaQueOJogadorEstá43, colunaQueOJogadorEstá44, colunaQueOJogadorEstá45, colunaQueOJogadorEstá46, colunaQueOJogadorEstá47, colunaQueOJogadorEstá48)
+linha4 = (coluna41, coluna42, coluna43, coluna44, coluna45, coluna46, coluna47, coluna48)
 
-linha5 = (colunaQueOJogadorEstá51, colunaQueOJogadorEstá52, colunaQueOJogadorEstá53, colunaQueOJogadorEstá54, colunaQueOJogadorEstá55, colunaQueOJogadorEstá56, colunaQueOJogadorEstá57, colunaQueOJogadorEstá58)
+linha5 = (coluna51, coluna52, coluna53, coluna54, coluna55, coluna56, coluna57, coluna58)
 
-linha6 = (colunaQueOJogadorEstá61, colunaQueOJogadorEstá62, colunaQueOJogadorEstá63, colunaQueOJogadorEstá64, colunaQueOJogadorEstá65, colunaQueOJogadorEstá66, colunaQueOJogadorEstá67, colunaQueOJogadorEstá68)
+linha6 = (coluna61, coluna62, coluna63, coluna64, coluna65, coluna66, coluna67, coluna68)
 
-linha7 = (colunaQueOJogadorEstá71, colunaQueOJogadorEstá72, colunaQueOJogadorEstá73, colunaQueOJogadorEstá74, colunaQueOJogadorEstá75, colunaQueOJogadorEstá76, colunaQueOJogadorEstá77, colunaQueOJogadorEstá78)
+linha7 = (coluna71, coluna72, coluna73, coluna74, coluna75, coluna76, coluna77, coluna78)
 
-linha8 = (colunaQueOJogadorEstá81, colunaQueOJogadorEstá82, colunaQueOJogadorEstá83, colunaQueOJogadorEstá84, colunaQueOJogadorEstá85, colunaQueOJogadorEstá86, colunaQueOJogadorEstá87, colunaQueOJogadorEstá88)
+linha8 = (coluna81, coluna82, coluna83, coluna84, coluna85, coluna86, coluna87, coluna88)
 
 
---colunaQueOJogadorEstá 1
-colunaQueOJogadorEstá11 = [PEDRA]
-colunaQueOJogadorEstá12 = [PEDRA]
-colunaQueOJogadorEstá13 = [PEDRA]
-colunaQueOJogadorEstá14 = [PEDRA]
-colunaQueOJogadorEstá15 = [PEDRA]
-colunaQueOJogadorEstá16 = [PEDRA]
-colunaQueOJogadorEstá17 = [PEDRA]
-colunaQueOJogadorEstá18 = [PEDRA]
+--coluna 1
+coluna11 = [PEDRA]
+coluna12 = [PEDRA]
+coluna13 = [PEDRA]
+coluna14 = [PEDRA]
+coluna15 = [PEDRA]
+coluna16 = [PEDRA]
+coluna17 = [PEDRA]
+coluna18 = [PEDRA]
 
---colunaQueOJogadorEstá 2
-colunaQueOJogadorEstá21 = [PEDRA]
-colunaQueOJogadorEstá22 = [GRAMA]
-colunaQueOJogadorEstá23 = [GRAMA]
-colunaQueOJogadorEstá24 = [PRESENTE_PATINS]
-colunaQueOJogadorEstá25 = [GRAMA]
-colunaQueOJogadorEstá26 = [GRAMA]
-colunaQueOJogadorEstá27 = [GRAMA]
-colunaQueOJogadorEstá28 = [PEDRA]
+--coluna 2
+coluna21 = [PEDRA]
+coluna22 = [GRAMA]
+coluna23 = [GRAMA]
+coluna24 = [PRESENTE_PATINS]
+coluna25 = [GRAMA]
+coluna26 = [GRAMA]
+coluna27 = [GRAMA]
+coluna28 = [PEDRA]
 
---colunaQueOJogadorEstá 3
-colunaQueOJogadorEstá31 = [PEDRA]
-colunaQueOJogadorEstá32 = [GRAMA]
-colunaQueOJogadorEstá33 = [PEDRA]
-colunaQueOJogadorEstá34 = [GRAMA]
-colunaQueOJogadorEstá35 = [PEDRA]
-colunaQueOJogadorEstá36 = [GRAMA]
-colunaQueOJogadorEstá37 = [GRAMA, PAREDE]
-colunaQueOJogadorEstá38 = [PEDRA]
+--coluna 3
+coluna31 = [PEDRA]
+coluna32 = [GRAMA]
+coluna33 = [PEDRA]
+coluna34 = [GRAMA]
+coluna35 = [PEDRA]
+coluna36 = [GRAMA]
+coluna37 = [GRAMA, PAREDE]
+coluna38 = [PEDRA]
 
---colunaQueOJogadorEstá 4
-colunaQueOJogadorEstá41 = [PEDRA]
-colunaQueOJogadorEstá42 = [GRAMA, PRESENTE_ARREMESSO]
-colunaQueOJogadorEstá43 = [GRAMA]
-colunaQueOJogadorEstá44 = [GRAMA, BOMBA]
+--coluna 4
+coluna41 = [PEDRA]
+coluna42 = [GRAMA, PRESENTE_ARREMESSO]
+coluna43 = [GRAMA]
+coluna44 = [GRAMA, BOMBA]
 
-colunaQueOJogadorEstá45 = [GRAMA, PAREDE]
-colunaQueOJogadorEstá46 = [GRAMA]
-colunaQueOJogadorEstá47 = [GRAMA, JOGADOR_2]
-colunaQueOJogadorEstá48 = [PEDRA]
+coluna45 = [GRAMA, PAREDE]
+coluna46 = [GRAMA]
+coluna47 = [GRAMA, JOGADOR_2]
+coluna48 = [PEDRA]
 
---colunaQueOJogadorEstá 5
-colunaQueOJogadorEstá51 = [PEDRA]
-colunaQueOJogadorEstá52 = [GRAMA, JOGADOR_1]
-colunaQueOJogadorEstá53 = [PEDRA]
-colunaQueOJogadorEstá54 = [GRAMA, PAREDE]
+--coluna 5
+coluna51 = [PEDRA]
+coluna52 = [GRAMA, JOGADOR_1]
+coluna53 = [PEDRA]
+coluna54 = [GRAMA, PAREDE]
 
-colunaQueOJogadorEstá55 = [PEDRA]
-colunaQueOJogadorEstá56 = [GRAMA]
-colunaQueOJogadorEstá57 = [GRAMA]
-colunaQueOJogadorEstá58 = [PEDRA]
+coluna55 = [PEDRA]
+coluna56 = [GRAMA]
+coluna57 = [GRAMA]
+coluna58 = [PEDRA]
 
---colunaQueOJogadorEstá 6
-colunaQueOJogadorEstá61 = [PEDRA]
-colunaQueOJogadorEstá62 = [GRAMA]
-colunaQueOJogadorEstá63 = [GRAMA]
-colunaQueOJogadorEstá64 = [GRAMA]
-colunaQueOJogadorEstá65 = [GRAMA]
-colunaQueOJogadorEstá66 = [GRAMA, PAREDE]
-colunaQueOJogadorEstá67 = [GRAMA]
-colunaQueOJogadorEstá68 = [PEDRA]
+--coluna 6
+coluna61 = [PEDRA]
+coluna62 = [GRAMA]
+coluna63 = [GRAMA]
+coluna64 = [GRAMA]
+coluna65 = [GRAMA]
+coluna66 = [GRAMA, PAREDE]
+coluna67 = [GRAMA]
+coluna68 = [PEDRA]
 
---colunaQueOJogadorEstá 7
-colunaQueOJogadorEstá71 = [PEDRA]
-colunaQueOJogadorEstá72 = [GRAMA, BOMBA]
-colunaQueOJogadorEstá73 = [GRAMA]
-colunaQueOJogadorEstá74 = [GRAMA, PRESENTE_ARREMESSO, JOGADOR_4]
-colunaQueOJogadorEstá75 = [GRAMA, JOGADOR_3]
-colunaQueOJogadorEstá76 = [GRAMA]
-colunaQueOJogadorEstá77 = [GRAMA]
-colunaQueOJogadorEstá78 = [PEDRA]
+--coluna 7
+coluna71 = [PEDRA]
+coluna72 = [GRAMA, BOMBA]
+coluna73 = [GRAMA]
+coluna74 = [GRAMA, PRESENTE_ARREMESSO, JOGADOR_4]
+coluna75 = [GRAMA, JOGADOR_3]
+coluna76 = [GRAMA]
+coluna77 = [GRAMA]
+coluna78 = [PEDRA]
 
---colunaQueOJogadorEstá 8
-colunaQueOJogadorEstá81 = [PEDRA]
-colunaQueOJogadorEstá82 = [PEDRA]
-colunaQueOJogadorEstá83 = [PEDRA]
-colunaQueOJogadorEstá84 = [PEDRA]
-colunaQueOJogadorEstá85 = [PEDRA]
-colunaQueOJogadorEstá86 = [PEDRA]
-colunaQueOJogadorEstá87 = [PEDRA]
-colunaQueOJogadorEstá88 = [PEDRA]
+--coluna 8
+coluna81 = [PEDRA]
+coluna82 = [PEDRA]
+coluna83 = [PEDRA]
+coluna84 = [PEDRA]
+coluna85 = [PEDRA]
+coluna86 = [PEDRA]
+coluna87 = [PEDRA]
+coluna88 = [PEDRA]
 
 identificador:: Jogador -> Identificador
 identificador (identificador,_,_,_) = identificador
@@ -129,11 +129,97 @@ verificaSeÉBuraco = null
 verificaGrama:: Célula -> Bool
 verificaGrama célula = head célula == GRAMA
 
-verificaPresente:: Célula -> Item -> Bool
-verificaPresente célula presente = verificaGrama célula && head(tail célula) == presente
+verificaPresente:: Célula -> Bool
+verificaPresente célula = resultado
+    where
+        caudaCélula = head(tail célula)
+        resultado = verificaGrama célula && caudaCélula == PRESENTE_ARREMESSO || caudaCélula == PRESENTE_PATINS
+
+verificaPedra:: Célula -> Bool
+verificaPedra célula = head célula == PEDRA
+
+verificaBomba:: Célula -> Bool
+verificaBomba célula = resultado
+    where
+        caudaCélula = head(tail célula)
+        resultado = verificaGrama célula && caudaCélula == BOMBA
 
 verificaJogador:: Célula -> Item -> Bool
 verificaJogador célula jogador = verificaGrama célula && head(tail célula) == jogador
+
+paredeEstáNaBase:: Célula -> Bool
+paredeEstáNaBase célula = head célula == PAREDE
+
+paredeEstáSobreGrama:: Célula -> Bool
+paredeEstáSobreGrama célula = verificaGrama célula && head(tail célula) == PAREDE
+
+verificaParede:: Célula -> Bool
+verificaParede célula = resultado
+    where
+    cabeca = head(tail célula)
+    cauda = head(tail(tail célula))
+    resultado = paredeEstáNaBase célula || paredeEstáSobreGrama célula || cabeca == PRESENTE_ARREMESSO || head(tail célula) == PRESENTE_PATINS && cauda == PAREDE
+
+validaBomba:: Célula -> Bool
+validaBomba célula = resultado
+    where
+        caudaCélula = head(tail célula)
+        resultado = verificaGrama célula && caudaCélula == BOMBA
+
+validaCélula:: Célula -> Bool
+validaCélula célula
+    | PRESENTE_PATINS `elem` célula || PRESENTE_ARREMESSO `elem` célula = verificaPresente célula
+    | PAREDE `elem` célula = verificaParede célula
+    | PEDRA `elem` célula = verificaPedra célula
+    | BOMBA `elem` célula = verificaBomba célula
+    | JOGADOR_1 `elem` célula = verificaJogador célula JOGADOR_1
+    | JOGADOR_2 `elem` célula = verificaJogador célula JOGADOR_2
+    | JOGADOR_3 `elem` célula = verificaJogador célula JOGADOR_3
+    | JOGADOR_4 `elem` célula = verificaJogador célula JOGADOR_4
+    | JOGADOR_5 `elem` célula = verificaJogador célula JOGADOR_5
+    | JOGADOR_6 `elem` célula = verificaJogador célula JOGADOR_6
+    | GRAMA `elem` célula = verificaGrama célula
+    | otherwise = verificaSeÉBuraco célula
+   
+
+percorreCélulasParaValidarTabuleiro:: Linha -> Int -> [Bool]
+percorreCélulasParaValidarTabuleiro linha iterador
+    | iterador == 8 && not(validaCélula célula) = [False]
+    | validaCélula célula = [True]
+    | otherwise = percorreCélulasParaValidarTabuleiro linha (iterador+1)
+    where
+        célula = if iterador == 8 then getCélula linha (iterador-1) else getCélula linha (iterador+1)
+        
+
+
+
+
+splitTodos :: [Char] -> Char -> [[Char]]
+splitTodos "" a = []
+splitTodos lista caractere = takeWhile (/= caractere) lista : splitTodos (drop 1 (dropWhile (/= caractere) lista)) caractere
+
+{--
+
+
+
+criaTabuleiro:: Tabuleiro -> Tabuleiro
+criaTabuleiro tabuleiro = if validaTabuleiro tabuleiro then tabuleiro else error "Tabuleiro inválido"
+
+
+validaTabuleiro:: Tabuleiro -> Bool
+validaTabuleiro tabuleiro = resultado
+    where
+
+
+percorreLinhasParaValidarTabuleiro:: Tabuleiro -> Int -> [Bool]
+percorreLinhasParaValidarTabuleiro tabuleiro iterador
+    | 
+    | otherwise = percorreCélulasParaValidarTabuleiro tabuleiro (iterador+1)
+    where
+        linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
+
+--}
+
 
 tabuleiro:: Tabuleiro
 tabuleiro = (linha1, linha2, linha3, linha4, linha5, linha6, linha7, linha8)
@@ -218,22 +304,21 @@ movimentaJogador tabuleiro jogador direcao = resultado
         --todo: falta atualizar a célula que o jogador irá chegar (nova posicao). já está funcionando atualizar (FEITO)
         resultado = tabuleiroComANovaPosicaoDoJogadorAtualizada
 
-
 pegaLocalizacaoJogador:: Tabuleiro -> Int -> Item -> Localizacao
 pegaLocalizacaoJogador tabuleiro iterador item
-    | iterador == 8 && not(procuraItemNasColunaQueOJogadorEstá linha 0 item) = (-1,-1)
-    | procuraItemNasColunaQueOJogadorEstá linha 0 item = coordenadas
+    | iterador == 8 && not(procuraItemNasColunas linha 0 item) = (-1,-1)
+    | procuraItemNasColunas linha 0 item = coordenadas
     | otherwise = pegaLocalizacaoJogador tabuleiro (iterador+1) item
     where
         linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
-        coordenadas = pegaCoordenadasDeUmItemVarrendoColunaQueOJogadorEstá linha 0 (iterador+1) item
+        coordenadas = pegaCoordenadasDeUmItemVarrendoColuna linha 0 (iterador+1) item
 
-pegaCoordenadasDeUmItemVarrendoColunaQueOJogadorEstá:: Linha -> Int -> Int -> Item -> Localizacao
-pegaCoordenadasDeUmItemVarrendoColunaQueOJogadorEstá linha iterador numeroLinha item
+pegaCoordenadasDeUmItemVarrendoColuna:: Linha -> Int -> Int -> Item -> Localizacao
+pegaCoordenadasDeUmItemVarrendoColuna linha iterador numeroLinha item
     | iterador == 8 && not(validaItemExisteNaCélula célula item) = (-1,-1)
     | validaItemExisteNaCélula célula item && numeroLinha == 0 = (numeroLinha+1, iterador+1)
     | validaItemExisteNaCélula célula item = (numeroLinha, iterador+1)
-    | otherwise = pegaCoordenadasDeUmItemVarrendoColunaQueOJogadorEstá linha (iterador+1) numeroLinha item
+    | otherwise = pegaCoordenadasDeUmItemVarrendoColuna linha (iterador+1) numeroLinha item
     where
         célula = if iterador == 8 then getCélula linha (iterador-1) else getCélula linha (iterador+1)
 
@@ -268,17 +353,17 @@ atualizaJogador jogador capacidades = resultado
 
 percorreLinhas:: Tabuleiro -> Int -> Item -> Item
 percorreLinhas tabuleiro iterador item
-    | iterador == 8 && not(procuraItemNasColunaQueOJogadorEstá linha 0 item) = ITEM_NAO_ENCONTRADO
-    | procuraItemNasColunaQueOJogadorEstá linha 0 item = item
+    | iterador == 8 && not(procuraItemNasColunas linha 0 item) = ITEM_NAO_ENCONTRADO
+    | procuraItemNasColunas linha 0 item = item
     | otherwise = percorreLinhas tabuleiro (iterador+1) item
     where
         linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
 
-procuraItemNasColunaQueOJogadorEstá:: Linha -> Int -> Item -> Bool
-procuraItemNasColunaQueOJogadorEstá linha iterador item
+procuraItemNasColunas:: Linha -> Int -> Item -> Bool
+procuraItemNasColunas linha iterador item
     | iterador == 8 && not(validaItemExisteNaCélula célula item) = False
     | validaItemExisteNaCélula célula item = True
-    | otherwise = procuraItemNasColunaQueOJogadorEstá linha (iterador+1) item
+    | otherwise = procuraItemNasColunas linha (iterador+1) item
     where
         célula = if iterador == 8 then getCélula linha (iterador-1) else getCélula linha (iterador+1)
 
@@ -290,11 +375,11 @@ dadoCoordenadaPegarOsItens tabuleiro (coordenadaX, coordenadaY) = resultado
         resultado = célula
 
 pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao:: Localizacao -> Direcao -> Localizacao
-pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao (linha, colunaQueOJogadorEstá) direcao
-    | direcao == NORTE = (linha-1, colunaQueOJogadorEstá)
-    | direcao == SUL = (linha+1, colunaQueOJogadorEstá)
-    | direcao == LESTE = (linha, colunaQueOJogadorEstá+1)
-    | otherwise = (linha, colunaQueOJogadorEstá-1)
+pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao (linha, coluna) direcao
+    | direcao == NORTE = (linha-1, coluna)
+    | direcao == SUL = (linha+1, coluna)
+    | direcao == LESTE = (linha, coluna+1)
+    | otherwise = (linha, coluna-1)
 
 removeJogadorCélula:: Célula -> Item -> Célula
 removeJogadorCélula [] jogador = []
@@ -318,10 +403,8 @@ percorreJogadores tabuleiro (x:xs) = resultado
 >>>getLinha tabuleiro 5
 ([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])
 
->>>procuraItemNasColunaQueOJogadorEstá (getLinha tabuleiro 5) 0
-No instance for (Show (Item -> Bool))
-  arising from a use of ‘evalPrint’
-  (maybe you haven't applied a function to enough arguments?)
+>>>procuraItemNasColunas (getLinha tabuleiro 5) 0 JOGADOR_1
+True
 
 >>>pegaLocalizacaoJogador tabuleiro 0 JOGADOR_1
 (5,2)
