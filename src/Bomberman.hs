@@ -15,6 +15,8 @@ type Jogador = (Identificador, Localizacao, Direcao, Capacidades)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Criação das Linhas e Colunas do Tabuleiro
+
+--TabuleiroVálido
 linha1 = (coluna11, coluna12, coluna13, coluna14, coluna15, coluna16, coluna17, coluna18)
 
 linha2 = (coluna21, coluna22, coluna23, coluna24, coluna25, coluna26, coluna27, coluna28)
@@ -31,6 +33,7 @@ linha7 = (coluna71, coluna72, coluna73, coluna74, coluna75, coluna76, coluna77, 
 
 linha8 = (coluna81, coluna82, coluna83, coluna84, coluna85, coluna86, coluna87, coluna88)
 
+linha2Errada = (coluna21, coluna24Errada, coluna23, coluna24, coluna25, coluna26, coluna27, coluna28)
 
 --coluna 1
 coluna11 = [PEDRA]
@@ -51,6 +54,8 @@ coluna25 = [GRAMA]
 coluna26 = [GRAMA]
 coluna27 = [GRAMA]
 coluna28 = [PEDRA]
+
+coluna24Errada = [PRESENTE_PATINS]
 
 --coluna 3
 coluna31 = [PEDRA]
@@ -197,8 +202,11 @@ validaTabuleiro tabuleiro = and (percorreLinhasParaValidarTabuleiro tabuleiro 0)
 criaTabuleiro:: Tabuleiro -> Tabuleiro
 criaTabuleiro tabuleiro = if validaTabuleiro tabuleiro then tabuleiro else error "Tabuleiro inválido"
 
-tabuleiro:: Tabuleiro
-tabuleiro = (linha1, linha2, linha3, linha4, linha5, linha6, linha7, linha8)
+tabuleiroVálido:: Tabuleiro
+tabuleiroVálido = (linha1, linha2, linha3, linha4, linha5, linha6, linha7, linha8)
+
+tabuleiroInválido:: Tabuleiro
+tabuleiroInválido = (linha1, linha2Errada, linha3, linha4, linha5, linha6, linha7, linha8)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Funções para manipular o Jogador e o Tabuleiro
@@ -219,7 +227,7 @@ jogadores:: [Item]
 jogadores = [JOGADOR_1, JOGADOR_2, JOGADOR_3, JOGADOR_4, JOGADOR_5, JOGADOR_6]
 
 jogador1:: Jogador
-jogador1 = (1, pegaLocalizacaoJogador tabuleiro 0 JOGADOR_1, NORTE, [])
+jogador1 = (1, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1, NORTE, [])
 
 getLinha:: Tabuleiro -> Int -> Linha
 getLinha (linha,_,_,_,_,_,_,_) 1 = linha
@@ -342,7 +350,7 @@ atualizaJogador jogador capacidades = resultado
         direcao1 = direcao jogador
         identificador1 = identificador jogador
         jogadorIdentificador = convertJogadorStringToItem ("JOGADOR_"++show identificador1)
-        localizacaoJogador = pegaLocalizacaoJogador tabuleiro 0 jogadorIdentificador
+        localizacaoJogador = pegaLocalizacaoJogador tabuleiroVálido 0 jogadorIdentificador
         resultado = (identificador1, localizacaoJogador, direcao1, capacidades)
 
 percorreLinhas:: Tabuleiro -> Int -> Item -> Item

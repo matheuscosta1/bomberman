@@ -6,8 +6,15 @@ import Control.Exception (evaluate)
 main:: IO ()
 main = hspec spec
 
+
 spec::Spec
 spec = do
-        describe "soma dos quadrados" $ do
-                it "teste" $
-                    [1,2,3,4,5,3,7,8,3] `shouldBe` [1,2,3,4,5,3,7,8,3]
+        describe "Pega Linha 5" $ do
+                it "Valida uma linha do tabuleiro" $
+                        getLinha tabuleiroVálido 5 `shouldBe` ([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA])
+        describe "Cria tabuleiro" $ do
+                it "Valida criação do tabuleiro" $
+                        criaTabuleiro tabuleiroVálido `shouldBe` tabuleiroVálido
+        describe "Cria tabuleiro inválido" $ do
+                it "Lança exceção ao criar tabuleiro inválido" $
+                        evaluate(criaTabuleiro tabuleiroInválido) `shouldThrow` errorCall "Tabuleiro inválido"
