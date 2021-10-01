@@ -1,5 +1,11 @@
 module Bomberman where
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+--Integrantes:
+
+--Matheus José da Costa                   11711BCC008
+--Gustavo Melo do Carmo                   11721BCC035
+--João Victor Marques Ferreira Lopes      11921BCC011    
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Definições de tipos de Dados que compõem o jogo Bomberman
 
 type Célula = [Item]

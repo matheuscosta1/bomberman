@@ -34,6 +34,79 @@ spec = do
         describe "Valida se item existe na célula" $ do
                 it "Verifica se o item JOGADOR_1 existe na célula [GRAMA, JOGADOR_1]" $
                         validaItemExisteNaCélula [GRAMA, JOGADOR_1] JOGADOR_1 `shouldBe` True
+        describe "Valida se a célula é buraco" $ do
+                it "É buraco" $
+                        verificaSeÉBuraco [] `shouldBe` True
+        describe "Valida grama" $ do
+                it "Valida se a grama está na base da pilha" $
+                        verificaGrama [GRAMA] `shouldBe` True
+        describe "Valida grama" $ do
+                it "Valida se a grama não está na base da pilha" $
+                        verificaGrama [PEDRA, GRAMA] `shouldBe` False
+        describe "Valida presente" $ do
+                it "Valida se o presente arremesso está sobre grama" $
+                        verificaPresente [GRAMA, PRESENTE_ARREMESSO] `shouldBe` True
+        describe "Valida presente" $ do
+                it "Valida se o presente patins está sobre grama" $
+                        verificaPresente [GRAMA, PRESENTE_PATINS] `shouldBe` True
+        describe "Valida presente" $ do
+                it "Valida se o presente patins não está sobre grama" $
+                        verificaPresente [PRESENTE_PATINS, GRAMA] `shouldBe` False
+        describe "Valida pedra" $ do
+                it "Valida se a pedra está na base da pilha" $
+                        verificaPedra [PEDRA] `shouldBe` True
+        describe "Valida pedra" $ do
+                it "Valida se a pedra não está na base da pilha" $
+                        verificaPedra [PRESENTE_PATINS, PEDRA] `shouldBe` False
+        describe "Valida bomba" $ do
+                it "Valida se bomba está sobre grama" $
+                        verificaBomba [GRAMA, BOMBA] `shouldBe` True
+        describe "Valida bomba" $ do
+                it "Valida se bomba não está sobre grama" $
+                        verificaBomba [BOMBA] `shouldBe` False
+        describe "Valida jogador" $ do
+                it "Valida se o jogador 1 está sobre grama" $
+                        verificaJogador [GRAMA, JOGADOR_1] JOGADOR_1 `shouldBe` True
+        describe "Valida jogador" $ do
+                it "Valida se o jogador 1 não está sobre grama" $
+                        verificaJogador [JOGADOR_1, GRAMA] JOGADOR_1 `shouldBe` False
+        describe "Valida parede" $ do
+                it "Valida se parede está na base" $
+                        paredeEstáNaBase [PAREDE] `shouldBe` True
+        describe "Valida pedra" $ do
+                it "Valida se pedra está sobre grama" $
+                        paredeEstáSobreGrama [GRAMA, PAREDE] `shouldBe` True
+        describe "Valida pedra" $ do
+                it "Valida se pedra está sobre presente" $
+                        verificaParede [GRAMA, PRESENTE_PATINS, PAREDE] `shouldBe` True
+        describe "Valida pedra" $ do
+                it "Valida se pedra está sobre presente" $
+                        verificaParede [GRAMA, PRESENTE_PATINS, PAREDE] `shouldBe` True
+        describe "Valida célula" $ do
+                it "Valida se uma célula [GRAMA, PRESENTE_PATINS, PAREDE] está nas regras do jogo" $
+                        validaCélula [GRAMA, PRESENTE_PATINS, PAREDE] `shouldBe` True
+        describe "Valida célula" $ do
+                it "Valida se uma célula [PRESENTE_PATINS, GRAMA, PAREDE] está nas regras do jogo" $
+                        validaCélula [PRESENTE_PATINS, GRAMA, PAREDE] `shouldBe` False
+        describe "Valida colunas da linha 5 do tabuleiro" $ do
+                it "Verifica se todas as colunas da linha 5 do tabuleiro são válidas" $
+                        percorreCélulasParaValidarTabuleiro (getLinha tabuleiroVálido 5) 0 `shouldBe` [True, True, True, True, True, True, True, True]
+        describe "Valida colunas da linha 2 de um tabuleiro inválido" $ do
+                it "Verifica se há alguma célula inválida na linha 2 de um tabuleiro inválido" $
+                        percorreCélulasParaValidarTabuleiro (getLinha tabuleiroInválido 2) 0 `shouldBe` [True, False, True, True, True, True, True, True]
+        describe "Percorre todas as linhas de um tabuleiro e valida se suas colunas são válidas" $ do
+                it "Valida se as células das linhas são válidas" $
+                        percorreLinhasParaValidarTabuleiro tabuleiroVálido  0 `shouldBe` [True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True]
+        describe "Percorre todas as linhas de um tabuleiro inválido e valida se suas colunas são válidas" $ do
+                it "Valida se as células das linhas são válidas" $
+                        percorreLinhasParaValidarTabuleiro tabuleiroInválido  0 `shouldBe` [True,True,True,True,True,True,True,True,True,False,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True,True]
+        describe "Valida se no tabuleiro há alguma célula inválida" $ do
+                it "Verifica se tem célula inválida em um tabuleiro inválido" $
+                        validaTabuleiro tabuleiroInválido `shouldBe` False
+        describe "Valida se no tabuleiro há alguma célula inválida" $ do
+                it "Verifica se tem célula inválida em um tabuleiro válido" $
+                        validaTabuleiro tabuleiroVálido `shouldBe` True 
+        
         --describe "Movimenta jogador" $ do
         --        it "Valida se quando o jogador 1 mover para o Norte ele deixa a sua posição (5,2) e assume uma nova (4,2)" $
                         
