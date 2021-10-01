@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+module Bomberman where
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Definições de tipos de Dados que compõem o jogo Bomberman
 
