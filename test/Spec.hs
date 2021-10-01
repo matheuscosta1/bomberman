@@ -6,8 +6,6 @@ import Control.Exception (evaluate)
 main:: IO ()
 main = hspec spec
 
---jogadorNaNovaPosicao = 
-
 spec::Spec
 spec = do
         describe "Pega Linha 5" $ do
