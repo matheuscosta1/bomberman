@@ -1,6 +1,4 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Bomberman where
-import GHC.Base (Bool(False))
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Integrantes:
 
@@ -99,7 +97,7 @@ coluna58 = [PEDRA]
 
 --coluna 6
 coluna61 = [PEDRA]
-coluna62 = [GRAMA]
+coluna62 = [GRAMA, PRESENTE_PATINS]
 coluna63 = [GRAMA]
 coluna64 = [GRAMA]
 coluna65 = [GRAMA]
@@ -235,7 +233,7 @@ jogadores:: [Item]
 jogadores = [JOGADOR_1, JOGADOR_2, JOGADOR_3, JOGADOR_4, JOGADOR_5, JOGADOR_6]
 
 jogador1:: Jogador
-jogador1 = (1, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1, NORTE, [])
+jogador1 = (1, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1, NORTE, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
 
 getLinha:: Tabuleiro -> Int -> Linha
 getLinha (linha,_,_,_,_,_,_,_) 1 = linha
@@ -280,8 +278,6 @@ montaNovoTabuleiroBaseadoNaNovaLinha (linha1, linha2, linha3, linha4, linha5, li
 adicionaJogadorNaNovaCelulaERemoveItens:: Célula -> Item -> Célula
 adicionaJogadorNaNovaCelulaERemoveItens [] jogador = []
 adicionaJogadorNaNovaCelulaERemoveItens (x:xs) jogador = x:[jogador]
-    --TODO: validar se for algum item do tipo PRESENTE_PATINS ou PRESENTE_ARREMESSO, guardar no inventário do jogador
-    --TODO: se a célula estiver vazia, o jogador morre
 
 atualizaCélulaNovaPosicaoDoJogador:: Linha -> Item -> Int ->  Linha
 atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 1 = (adicionaJogadorNaNovaCelulaERemoveItens celula1 jogador, celula2 , celula3, celula4, celula5, celula6, celula7, celula8)
@@ -298,32 +294,33 @@ validaSeJogadorPodeMoverParaNovaPosição itens
     |  BOMBA `elem` itens || PEDRA `elem` itens = False
     | otherwise = True
 
+atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula:: Jogador -> Tabuleiro -> Direcao -> Célula -> Jogador
+atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula jogador tabuleiro direcao itens = resultado
+    where
+        item
+          | PRESENTE_ARREMESSO `elem` itens = PRESENTE_ARREMESSO
+          | PRESENTE_PATINS `elem` itens = PRESENTE_PATINS
+          | otherwise = ITEM_NAO_ENCONTRADO
+        capacidadesJogador = capacidade jogador
+        capacidades = incrementaCapacidades capacidadesJogador item
+        resultado = atualizaJogador jogador tabuleiro direcao capacidades
 
-
---atualizaTabuleiro:: Linha -> 
-movimentaJogador:: Tabuleiro -> Item -> Direcao -> Tabuleiro
-movimentaJogador tabuleiro jogador direcao
+movimentaJogadorNoTabuleiro:: Tabuleiro -> Item -> Localizacao -> Localizacao -> [Item] -> Tabuleiro
+movimentaJogadorNoTabuleiro tabuleiro identificacaoJogador (linhaQueOJogadorEstá, colunaQueOJogadorEstá) (linhaQueOJogadorQuerIr, colunaQueOJogadorQuerIr) itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
     | not(validaSeJogadorPodeMoverParaNovaPosição itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr) = error "Jogador não pode se mover para a posição desejada"
     | otherwise = resultado
     where
-        (linhaQueOJogadorEstá, colunaQueOJogadorEstá) = pegaLocalizacaoJogador tabuleiro 0 jogador
-
-        (linhaQueOJogadorQuerIr, colunaQueOJogadorQuerIr) = pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao (linhaQueOJogadorEstá, colunaQueOJogadorEstá) direcao
-
-        --TODO: validar se o jogador pode movimentar ou não. Se for bomba ou pedra, não pode mover
-        itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr = dadoCoordenadaPegarOsItens tabuleiro (linhaQueOJogadorQuerIr, colunaQueOJogadorQuerIr)
 
         linhaJogador = getLinha tabuleiro linhaQueOJogadorEstá
-        novaLinha = atualizaCélulaJogador linhaJogador jogador colunaQueOJogadorEstá
+        novaLinha = atualizaCélulaJogador linhaJogador identificacaoJogador colunaQueOJogadorEstá
 
         tabuleiroComAPosicaoAntigaDoJogadorAtualizada = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiro novaLinha linhaQueOJogadorEstá
 
         linhaComANovaPosicaoJogador = getLinha tabuleiroComAPosicaoAntigaDoJogadorAtualizada linhaQueOJogadorQuerIr
-        novaLinhaComANovaPosicaoDoJogador = atualizaCélulaNovaPosicaoDoJogador linhaComANovaPosicaoJogador jogador colunaQueOJogadorQuerIr
+        novaLinhaComANovaPosicaoDoJogador = atualizaCélulaNovaPosicaoDoJogador linhaComANovaPosicaoJogador identificacaoJogador colunaQueOJogadorQuerIr
 
         tabuleiroComANovaPosicaoDoJogadorAtualizada = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiroComAPosicaoAntigaDoJogadorAtualizada novaLinhaComANovaPosicaoDoJogador linhaQueOJogadorQuerIr
 
-        --todo: falta atualizar a célula que o jogador irá chegar (nova posicao). já está funcionando atualizar (FEITO)
         resultado = tabuleiroComANovaPosicaoDoJogadorAtualizada
 
 pegaLocalizacaoJogador:: Tabuleiro -> Int -> Item -> Localizacao
@@ -362,10 +359,11 @@ convertJogadorStringToItem jogador
     | otherwise = JOGADOR_6
 
 incrementaCapacidades:: Capacidades -> Item -> Capacidades
-incrementaCapacidades [] novoItem = []
+incrementaCapacidades [] _ = []
 incrementaCapacidades (x:xs) novoItem
-    | novoItem == fst x = (fst x, snd x+1) : incrementaCapacidades xs novoItem
+    | novoItem == fst x = (fst x, snd x+1): incrementaCapacidades xs novoItem
     | otherwise = x:incrementaCapacidades xs novoItem
+
 
 decrementaCapacidades:: Capacidades -> Item -> Capacidades
 decrementaCapacidades [] itemASerArremessado = []
@@ -376,15 +374,19 @@ decrementaCapacidades (x:xs) itemASerArremessado
         item = fst x
         quantidade = snd x-1
 
-
-atualizaJogador:: Jogador -> Capacidades -> Jogador
-atualizaJogador jogador capacidades = resultado
+pegaQualÉOJogador:: Jogador -> Item
+pegaQualÉOJogador jogador = jogadorIdentificador
     where
-        direcao1 = direcao jogador
         identificador1 = identificador jogador
         jogadorIdentificador = convertJogadorStringToItem ("JOGADOR_"++show identificador1)
-        localizacaoJogador = pegaLocalizacaoJogador tabuleiroVálido 0 jogadorIdentificador
-        resultado = (identificador1, localizacaoJogador, direcao1, capacidades)
+
+atualizaJogador:: Jogador -> Tabuleiro -> Direcao -> Capacidades -> Jogador
+atualizaJogador jogador tabuleiro direcao capacidades = resultado
+    where
+        identificador1 = identificador jogador
+        jogadorIdentificador = convertJogadorStringToItem ("JOGADOR_"++show identificador1)
+        localizacaoJogador = pegaLocalizacaoJogador tabuleiro 0 jogadorIdentificador
+        resultado = (identificador1, localizacaoJogador, direcao, capacidades)
 
 percorreLinhas:: Tabuleiro -> Int -> Item -> Item
 percorreLinhas tabuleiro iterador item
