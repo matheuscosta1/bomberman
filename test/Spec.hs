@@ -112,6 +112,15 @@ spec = do
         describe "Valida se no tabuleiro há alguma célula inválida" $ do
                 it "Verifica se tem célula inválida em um tabuleiro válido" $
                         validaTabuleiro tabuleiroVálido `shouldBe` True
+        describe "Incrementa capacidades" $ do
+                it "Dado as capacidades de um jogador e há um novo item para ele coletar, incrementa nas suas capacidades esse item" $
+                        incrementaCapacidades [(PRESENTE_PATINS, 1), (PRESENTE_ARREMESSO, 3)] PRESENTE_PATINS `shouldBe` [(PRESENTE_PATINS, 2), (PRESENTE_ARREMESSO, 3)]
+        describe "Decrementa capacidades" $ do
+                it "Dado as capacidades de um jogador e há um item a ser arremessado, decrementa esse itme nas suas capacidades" $
+                        decrementaCapacidades [(PRESENTE_ARREMESSO, 3), (PRESENTE_PATINS, 2)] PRESENTE_ARREMESSO `shouldBe` [(PRESENTE_ARREMESSO,2),(PRESENTE_PATINS,2)]
+        describe "Decrementa capacidades" $ do
+                it "Dado as capacidades de um jogador e há um item a ser arremessado, e o jogador possui apenas 1 capacidade desse item, remove-o das capacidades" $
+                        decrementaCapacidades [(PRESENTE_ARREMESSO, 1), (PRESENTE_PATINS, 2)] PRESENTE_ARREMESSO `shouldBe` [(PRESENTE_PATINS,2)]
         describe "Move jogador 1" $ do
                 it "Move jogador 1 para a nova célula e remove itens" $
                         adicionaJogadorNaNovaCelulaERemoveItens [GRAMA, PRESENTE_ARREMESSO] JOGADOR_1 `shouldBe` [GRAMA, JOGADOR_1]
@@ -133,6 +142,9 @@ spec = do
         describe "Move jogador 1" $ do
                 it "Valida se quando o jogador 1 mover para o Norte ele deixa a sua posição (5,2) e assume uma nova (4,2)" $
                         movimentaJogador tabuleiroVálido JOGADOR_1 NORTE `shouldBe` (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA,JOGADOR_2],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO,JOGADOR_4],[GRAMA,JOGADOR_3],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]))
+        describe "Move jogador 1" $ do
+                it "Valida se quando o jogador 1 mover para o Leste ele deixa a sua posição (5,2) e assume uma nova (5,3) -- em que tem PEDRA -- dará erro que ele não pode se mover" $
+                        evaluate(movimentaJogador tabuleiroVálido JOGADOR_1 LESTE) `shouldThrow` errorCall "Jogador não pode se mover para a posição desejada"
         describe "Atualiza jogador 1" $ do
                 it "Atualiza capacidades do jogador 1" $
                         atualizaJogador jogador1 [(PRESENTE_ARREMESSO, 1)] `shouldBe` (1, (5,2), NORTE, [(PRESENTE_ARREMESSO, 1)])

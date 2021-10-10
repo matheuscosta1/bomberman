@@ -1,4 +1,6 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Bomberman where
+import GHC.Base (Bool(False))
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Integrantes:
 
@@ -291,9 +293,18 @@ atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5
 atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 7 = (celula1, celula2 , celula3, celula4, celula5, celula6, adicionaJogadorNaNovaCelulaERemoveItens celula7 jogador, celula8)
 atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 8 = (celula1, celula2 , celula3, celula4, celula5, celula6, celula7, adicionaJogadorNaNovaCelulaERemoveItens celula8 jogador)
 
+validaSeJogadorPodeMoverParaNovaPosição:: [Item] -> Bool
+validaSeJogadorPodeMoverParaNovaPosição itens
+    |  BOMBA `elem` itens || PEDRA `elem` itens = False
+    | otherwise = True
+
+
+
 --atualizaTabuleiro:: Linha -> 
 movimentaJogador:: Tabuleiro -> Item -> Direcao -> Tabuleiro
-movimentaJogador tabuleiro jogador direcao = resultado
+movimentaJogador tabuleiro jogador direcao
+    | not(validaSeJogadorPodeMoverParaNovaPosição itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr) = error "Jogador não pode se mover para a posição desejada"
+    | otherwise = resultado
     where
         (linhaQueOJogadorEstá, colunaQueOJogadorEstá) = pegaLocalizacaoJogador tabuleiro 0 jogador
 
@@ -349,6 +360,22 @@ convertJogadorStringToItem jogador
     | jogador == "JOGADOR_4" = JOGADOR_4
     | jogador == "JOGADOR_5" = JOGADOR_5
     | otherwise = JOGADOR_6
+
+incrementaCapacidades:: Capacidades -> Item -> Capacidades
+incrementaCapacidades [] novoItem = []
+incrementaCapacidades (x:xs) novoItem
+    | novoItem == fst x = (fst x, snd x+1) : incrementaCapacidades xs novoItem
+    | otherwise = x:incrementaCapacidades xs novoItem
+
+decrementaCapacidades:: Capacidades -> Item -> Capacidades
+decrementaCapacidades [] itemASerArremessado = []
+decrementaCapacidades (x:xs) itemASerArremessado
+    | itemASerArremessado == fst x = if quantidade == 0 then decrementaCapacidades xs itemASerArremessado else (item, quantidade) : decrementaCapacidades xs itemASerArremessado
+    | otherwise = x:decrementaCapacidades xs itemASerArremessado
+    where
+        item = fst x
+        quantidade = snd x-1
+
 
 atualizaJogador:: Jogador -> Capacidades -> Jogador
 atualizaJogador jogador capacidades = resultado
