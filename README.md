@@ -18,6 +18,10 @@ Este projeto tem como objetivo a implementação de um jogo Bomberman utilizando
 
 ```cabal test``` ou ```stack test```
 
+* Rodar na pasta raiz o seguinte comando para executar a Main:
+
+```stack run```
+
 ## Tabuleiro base para teste:
 
 ![Tabuleiro](images/tabuleiro.png)
