@@ -8,7 +8,7 @@ Este projeto tem como objetivo a implementação de um jogo Bomberman utilizando
 
 * Instalar o Cabal:
 
-```sudo apt-get install cabal-install cabal update```
+```sudo apt-get install cabal-install && cabal update```
 
 * Necessário instalar a lib hspec:
 
@@ -16,7 +16,7 @@ Este projeto tem como objetivo a implementação de um jogo Bomberman utilizando
 
 * Rodar na pasta raiz o seguinte comando para testar:
 
-```cabal test```
+```cabal test``` ou ```stack test```
 
 ## Tabuleiro base para teste:
 
