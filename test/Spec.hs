@@ -122,7 +122,6 @@ spec = do
         describe "Atualiza capacidades do jogador" $ do
                 it "Dado um jogador e os itens de uma nova célula, devolve o jogador com as capacidades atualizadas" $
                         atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula jogador1 tabuleiroVálido NORTE (dadoCoordenadaPegarOsItens tabuleiroVálido (4,2)) `shouldBe` (1,(5,2),NORTE,[(PRESENTE_PATINS,0),(PRESENTE_ARREMESSO,1)])
-        
         describe "Move jogador 1" $ do
                 it "Move jogador 1 para a nova célula e remove itens" $
                         adicionaJogadorNaNovaCelulaERemoveItens [GRAMA, PRESENTE_ARREMESSO] JOGADOR_1 `shouldBe` [GRAMA, JOGADOR_1]

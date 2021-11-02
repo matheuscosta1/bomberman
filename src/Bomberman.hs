@@ -1,4 +1,8 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Bomberman where
+import Data.Maybe (fromMaybe)
+--import System.Random.Shuffle ( shuffleM ) 
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Integrantes:
 
@@ -13,11 +17,35 @@ type Linha = (Célula, Célula, Célula, Célula, Célula, Célula, Célula, Cé
 type Tabuleiro = (Linha, Linha, Linha, Linha, Linha, Linha, Linha, Linha)
 data Item = GRAMA | PAREDE | PEDRA | PRESENTE_PATINS | PRESENTE_ARREMESSO | BOMBA | JOGADOR_1 | JOGADOR_2 | JOGADOR_3 | JOGADOR_4 | JOGADOR_5 | JOGADOR_6 | ITEM_NAO_ENCONTRADO deriving(Eq, Show)
 
-data Direcao = NORTE | SUL | LESTE | OESTE deriving(Eq, Show)
+data Direcao = NORTE | SUL | LESTE | OESTE | NADA deriving(Eq, Show)
 type Identificador = Int
 type Localizacao = (Int, Int)
 type Capacidades = [(Item, Int)]
 type Jogador = (Identificador, Localizacao, Direcao, Capacidades)
+
+data Ação = ColocarBomba | Agir | Mover Direcao | NO_OP | SAIR deriving (Show, Eq)
+
+
+keyMaps :: [(Item, [(Char, Ação)])]
+keyMaps = [(JOGADOR_1,[('e',ColocarBomba),('r',Agir),('a', Mover OESTE),('s', Mover SUL),('d',Mover LESTE),('w', Mover NORTE),('Q', SAIR)]),
+           (JOGADOR_2,[('o',ColocarBomba),('p',Agir),('h', Mover OESTE),('j', Mover SUL),('l',Mover LESTE),('k', Mover NORTE),('Q', SAIR)])]
+
+mapKey :: Char -> [(Item, [(Char, Ação)])] -> Maybe (Item, Ação)
+mapKey c []     = Nothing
+mapKey c ((j,as):jas) = case mapKey' c as of Nothing -> mapKey c jas
+                                             Just a  -> Just (j,a)
+    where mapKey' c [] = Nothing
+          mapKey' c ((c',a):ms)
+            | c == c'   = Just a
+            | otherwise = mapKey' c ms
+
+pegaMov :: [Item] -> IO (Maybe (Item,Ação))
+pegaMov js = do
+        movChar <- getChar
+        return (let mapped = mapKey movChar keyMaps
+                in case mapped of Nothing     -> Nothing
+                                  Just (j,a)  -> if j `elem` js then mapped
+                                                                else Nothing)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Criação das Linhas e Colunas do Tabuleiro
@@ -170,6 +198,9 @@ validaBomba célula = resultado
         caudaCélula = head(tail célula)
         resultado = verificaGrama célula && caudaCélula == BOMBA
 
+éParedeOuPedra:: Célula -> Bool
+éParedeOuPedra célula = PAREDE `elem` célula || PEDRA `elem` célula
+
 validaCélula:: Célula -> Bool
 validaCélula célula
     | PRESENTE_PATINS `elem` célula || PRESENTE_ARREMESSO `elem` célula = verificaPresente célula
@@ -192,7 +223,6 @@ percorreLinhasParaValidarTabuleiro tabuleiro iterador
     where
         linha = if iterador == 8 then getLinha tabuleiro (iterador-1) else getLinha tabuleiro (iterador+1)
         validaCélulas = percorreCélulasParaValidarTabuleiro linha 0
-
 
 percorreCélulasParaValidarTabuleiro:: Linha -> Int -> [Bool]
 percorreCélulasParaValidarTabuleiro linha iterador
@@ -226,6 +256,16 @@ localizacao (_,localizacao,_,_) = localizacao
 direcao:: Jogador -> Direcao
 direcao (_,_,direcao,_) = direcao
 
+converteAcaoEmDirecao:: Ação -> Direcao
+converteAcaoEmDirecao acao = case acao of 
+                                Mover NORTE -> NORTE
+                                Mover SUL -> SUL
+                                Mover OESTE -> OESTE
+                                Mover LESTE -> LESTE
+
+n :: Ação
+n = error "not implemented"
+
 capacidade:: Jogador -> Capacidades
 capacidade (_,_,_,capacidade) = capacidade
 
@@ -233,7 +273,35 @@ jogadores:: [Item]
 jogadores = [JOGADOR_1, JOGADOR_2, JOGADOR_3, JOGADOR_4, JOGADOR_5, JOGADOR_6]
 
 jogador1:: Jogador
-jogador1 = (1, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1, NORTE, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
+jogador1 = (1, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1, NADA, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
+
+jogador2:: Jogador
+jogador2 = (2, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_2, NADA, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
+
+jogadoresInicializados = [jogador1, jogador2]
+
+actionLoop :: Tabuleiro -> [Jogador] -> IO ()
+actionLoop t js =
+    let ids = [pegaQualÉOJogador i | i <- js]  
+    
+    
+    in
+
+    
+
+    do
+        move <- pegaMov ids
+        let (j,op) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) move
+        print $ "(Jogador,Ação)" ++ show (j,op)
+        if op == SAIR
+        then return ()
+        else let (t',js') = case op of
+                                --ColocarBomba   -> colocarBomba t js j
+                                --Agir           -> agir t js j
+                                --Mover d        -> mover d t js j
+                                NO_OP          -> (t,js)
+                                _              -> (t,js)
+             in actionLoop t' js'
 
 getLinha:: Tabuleiro -> Int -> Linha
 getLinha (linha,_,_,_,_,_,_,_) 1 = linha
@@ -291,7 +359,7 @@ atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5
 
 validaSeJogadorPodeMoverParaNovaPosição:: [Item] -> Bool
 validaSeJogadorPodeMoverParaNovaPosição itens
-    |  BOMBA `elem` itens || PEDRA `elem` itens = False
+    |  BOMBA `elem` itens || PEDRA `elem` itens || PAREDE `elem` itens = False
     | otherwise = True
 
 atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula:: Jogador -> Tabuleiro -> Direcao -> Célula -> Jogador
@@ -322,6 +390,28 @@ movimentaJogadorNoTabuleiro tabuleiro identificacaoJogador (linhaQueOJogadorEst�
         tabuleiroComANovaPosicaoDoJogadorAtualizada = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiroComAPosicaoAntigaDoJogadorAtualizada novaLinhaComANovaPosicaoDoJogador linhaQueOJogadorQuerIr
 
         resultado = tabuleiroComANovaPosicaoDoJogadorAtualizada
+
+--todasAsPosicoesQueUmaBombaPodeAtingirDeAcordoComOLugarQueElaCaiu:: Tabuleiro -> Localizacao -> Int -> [Localizacao]
+--todasAsPosicoesQueUmaBombaPodeAtingirDeAcordoComOLugarQueElaCaiu tabuleiro (linha, coluna) capacidade
+
+{--posicaoEmQueABombaIráCairDeAcordoComADireçãoECapacidadeDoJogador:: Tabuleiro -> Localizacao -> Direcao -> Int -> Localizacao
+posicaoEmQueABombaIráCairDeAcordoComADireçãoECapacidadeDoJogador tabuleiro (linha, coluna) direcao capacidade
+    | direcao == NORTE && éPedraOuparede = (linhaAtualizada-capacidade-1, colunaAtualizada)
+    | direcao == SUL && éPedraOuparede = (linhaAtualizada+capacidade-1, colunaAtualizada)
+    | direcao == LESTE && éPedraOuparede = (linhaAtualizada, colunaAtualizada+capacidade-1)
+    | direcao == OESTE && éPedraOuparede = (linhaAtualizada, colunaAtualizada-capacidade-1)
+    | otherwise = (linhaAtualizada, colunaAtualizada)
+    where
+        (linhaAtualizada, colunaAtualizada)
+          | direcao == NORTE = (if linha-capacidade < 0 then if linha-capacidade > else linha-capacidade , coluna)
+          | direcao == SUL = (linha+capacidade, coluna)
+          | direcao == LESTE = (linha, coluna+capacidade)
+          | otherwise = (linha, coluna-capacidade)
+        
+        itens = dadoCoordenadaPegarOsItens tabuleiro (linhaAtualizada, colunaAtualizada)
+        éPedraOuparede = éParedeOuPedra itens
+--}
+
 
 pegaLocalizacaoJogador:: Tabuleiro -> Int -> Item -> Localizacao
 pegaLocalizacaoJogador tabuleiro iterador item
@@ -363,7 +453,6 @@ incrementaCapacidades [] _ = []
 incrementaCapacidades (x:xs) novoItem
     | novoItem == fst x = (fst x, snd x+1): incrementaCapacidades xs novoItem
     | otherwise = x:incrementaCapacidades xs novoItem
-
 
 decrementaCapacidades:: Capacidades -> Item -> Capacidades
 decrementaCapacidades [] itemASerArremessado = []
