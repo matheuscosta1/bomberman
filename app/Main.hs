@@ -69,18 +69,8 @@ looping tabuleiro jogadores = do
 main :: IO ()
 main = do
     print_table (imprimeLinhas tabuleiroVálido)
+    
     looping tabuleiroVálido [jogador1, jogador2]
-    {--print $ "Novo Tabuleiro: " ++ show tabuleiroVálido
-    putStrLn $ tabl EnvAscii hdecor vdecor aligns cells 
-    where
-        hdecor = DecorUnion [DecorOuter, DecorOnly [1]]
-        vdecor = DecorAll
-        aligns = [AlignLeft, AlignLeft, AlignRight]
-        cells  = [ ["Name", "SI Unit", "Value"]
-                , ["Speed of light", "m/s", "299792458"]
-                , ["Atmosphere", "Pa", "101325"]
-                , ["Absolute zero", "C", "-273.15"] ]
-    --}
     
 
     

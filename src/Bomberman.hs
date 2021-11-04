@@ -22,8 +22,6 @@ type Jogador = (Identificador, Localizacao, Direcao, Capacidades)
 
 data Ação = ColocarBomba | Agir | Mover Direcao | NO_OP | SAIR deriving (Show, Eq)
 
-
-
 -----------------------------------------------------------------------------------------------------------------------------------------------
 
 keyMaps :: [(Item, [(Char, Ação)])]
@@ -283,12 +281,7 @@ jogadoresInicializados = [jogador1, jogador2]
 actionLoop :: Tabuleiro -> [Jogador] -> IO ()
 actionLoop t js =
     let ids = [pegaQualÉOJogador i | i <- js]
-
-
     in
-
-
-
     do
         move <- pegaMov ids
         let (j,op) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) move
@@ -521,9 +514,6 @@ percorreJogadores tabuleiro (x:xs) = resultado
 éFimDeJogo:: Tabuleiro -> Bool
 éFimDeJogo tabuleiro = length(percorreJogadores tabuleiro jogadores) == 1
 
-
-
-
 convertItemIntoString:: Item -> String
 convertItemIntoString item
     | item == GRAMA = "GRAMA"
@@ -539,8 +529,6 @@ convertItemIntoString item
     | item == JOGADOR_5 = "JOGADOR_5"
     | otherwise = "JOGADOR_6"
 
-
-
 imprimeLinhas tabuleiro = final
     where
         linha1 = getLinha tabuleiro 1
@@ -553,23 +541,11 @@ imprimeLinhas tabuleiro = final
         linha8 = getLinha tabuleiro 8
         final = [printaCélulas linha1, printaCélulas linha2, printaCélulas linha3, printaCélulas linha4, printaCélulas linha5, printaCélulas linha6, printaCélulas linha7, printaCélulas linha8]
 
-addSpaces :: Int -> String
-addSpaces n = replicate n '\t'
-
-
 printaCélulas linha =
-
     [convertItemIntoString (last (getCélula linha 1)), convertItemIntoString (last (getCélula linha 2)),
     convertItemIntoString (last (getCélula linha 3)), convertItemIntoString (last (getCélula linha 4)),
     convertItemIntoString (last (getCélula linha 5)), convertItemIntoString (last (getCélula linha 6)),
     convertItemIntoString (last (getCélula linha 7)), convertItemIntoString (last (getCélula linha 8))]
-
-printaCélulas1:: Linha -> [String]
-printaCélulas1 linha =
-    [convertItemIntoString (last (getCélula linha 1)), convertItemIntoString (last (getCélula linha 2)),
-    convertItemIntoString (last (getCélula linha 3)), convertItemIntoString (last (getCélula linha 4)),
-    convertItemIntoString (last (getCélula linha 5)), convertItemIntoString (last (getCélula linha 6)),
-    convertItemIntoString (last (getCélula linha 7)),convertItemIntoString (last (getCélula linha 8))]
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
