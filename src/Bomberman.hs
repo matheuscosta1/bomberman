@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Bomberman where
 import Data.Maybe (fromMaybe)
 --import System.Random.Shuffle ( shuffleM ) 
@@ -6,9 +5,7 @@ import Data.Maybe (fromMaybe)
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Integrantes:
 
---Matheus José da Costa                   11711BCC008
---Gustavo Melo do Carmo                   11721BCC035
---João Victor Marques Ferreira Lopes      11921BCC011    
+--Matheus José da Costa                   11711BCC008  
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 --Definições de tipos de Dados que compõem o jogo Bomberman
 
@@ -25,6 +22,9 @@ type Jogador = (Identificador, Localizacao, Direcao, Capacidades)
 
 data Ação = ColocarBomba | Agir | Mover Direcao | NO_OP | SAIR deriving (Show, Eq)
 
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
 
 keyMaps :: [(Item, [(Char, Ação)])]
 keyMaps = [(JOGADOR_1,[('e',ColocarBomba),('r',Agir),('a', Mover OESTE),('s', Mover SUL),('d',Mover LESTE),('w', Mover NORTE),('Q', SAIR)]),
@@ -190,7 +190,7 @@ verificaParede célula = resultado
     where
     cabeca = head(tail célula)
     cauda = head(tail(tail célula))
-    resultado = paredeEstáNaBase célula || paredeEstáSobreGrama célula || cabeca == PRESENTE_ARREMESSO || (head(tail célula) == PRESENTE_PATINS && cauda == PAREDE)
+    resultado = paredeEstáNaBase célula || paredeEstáSobreGrama célula || cabeca == PRESENTE_ARREMESSO || head(tail célula) == PRESENTE_PATINS && cauda == PAREDE
 
 validaBomba:: Célula -> Bool
 validaBomba célula = resultado
@@ -257,7 +257,7 @@ direcao:: Jogador -> Direcao
 direcao (_,_,direcao,_) = direcao
 
 converteAcaoEmDirecao:: Ação -> Direcao
-converteAcaoEmDirecao acao = case acao of 
+converteAcaoEmDirecao acao = case acao of
                                 Mover NORTE -> NORTE
                                 Mover SUL -> SUL
                                 Mover OESTE -> OESTE
@@ -282,12 +282,12 @@ jogadoresInicializados = [jogador1, jogador2]
 
 actionLoop :: Tabuleiro -> [Jogador] -> IO ()
 actionLoop t js =
-    let ids = [pegaQualÉOJogador i | i <- js]  
-    
-    
+    let ids = [pegaQualÉOJogador i | i <- js]
+
+
     in
 
-    
+
 
     do
         move <- pegaMov ids
@@ -520,6 +520,56 @@ percorreJogadores tabuleiro (x:xs) = resultado
 
 éFimDeJogo:: Tabuleiro -> Bool
 éFimDeJogo tabuleiro = length(percorreJogadores tabuleiro jogadores) == 1
+
+
+
+
+convertItemIntoString:: Item -> String
+convertItemIntoString item
+    | item == GRAMA = "GRAMA"
+    | item == PAREDE = "PAREDE"
+    | item == PEDRA = "PEDRA"
+    | item == PRESENTE_PATINS = "PRESENTE_PATINS"
+    | item == PRESENTE_ARREMESSO = "PRESENTE_ARREMESSO"
+    | item == BOMBA = "BOMBA"
+    | item == JOGADOR_1 = "JOGADOR_1"
+    | item == JOGADOR_2 = "JOGADOR_2"
+    | item == JOGADOR_3 = "JOGADOR_3"
+    | item == JOGADOR_4 = "JOGADOR_4"
+    | item == JOGADOR_5 = "JOGADOR_5"
+    | otherwise = "JOGADOR_6"
+
+
+
+imprimeLinhas tabuleiro = final
+    where
+        linha1 = getLinha tabuleiro 1
+        linha2 = getLinha tabuleiro 2
+        linha3 = getLinha tabuleiro 3
+        linha4 = getLinha tabuleiro 4
+        linha5 = getLinha tabuleiro 5
+        linha6 = getLinha tabuleiro 6
+        linha7 = getLinha tabuleiro 7
+        linha8 = getLinha tabuleiro 8
+        final = [printaCélulas linha1, printaCélulas linha2, printaCélulas linha3, printaCélulas linha4, printaCélulas linha5, printaCélulas linha6, printaCélulas linha7, printaCélulas linha8]
+
+addSpaces :: Int -> String
+addSpaces n = replicate n '\t'
+
+
+printaCélulas linha =
+
+    [convertItemIntoString (last (getCélula linha 1)), convertItemIntoString (last (getCélula linha 2)),
+    convertItemIntoString (last (getCélula linha 3)), convertItemIntoString (last (getCélula linha 4)),
+    convertItemIntoString (last (getCélula linha 5)), convertItemIntoString (last (getCélula linha 6)),
+    convertItemIntoString (last (getCélula linha 7)), convertItemIntoString (last (getCélula linha 8))]
+
+printaCélulas1:: Linha -> [String]
+printaCélulas1 linha =
+    [convertItemIntoString (last (getCélula linha 1)), convertItemIntoString (last (getCélula linha 2)),
+    convertItemIntoString (last (getCélula linha 3)), convertItemIntoString (last (getCélula linha 4)),
+    convertItemIntoString (last (getCélula linha 5)), convertItemIntoString (last (getCélula linha 6)),
+    convertItemIntoString (last (getCélula linha 7)),convertItemIntoString (last (getCélula linha 8))]
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 

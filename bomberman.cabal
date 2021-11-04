@@ -48,6 +48,9 @@ executable bomberman-exe
     , random-shuffle >= 0.0.4
     , bomberman
     , QuickCheck
+    , safe
+    , text
+    , boxes
   default-language: Haskell2010
 
 test-suite bomberman-test
@@ -64,5 +67,8 @@ test-suite bomberman-test
     , QuickCheck
     , hspec
     , random-shuffle >= 0.0.4
+    , safe
+    , text
+    , boxes
   default-language: Haskell2010
 

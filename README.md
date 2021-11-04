@@ -10,9 +10,12 @@ Este projeto tem como objetivo a implementação de um jogo Bomberman utilizando
 
 ```sudo apt-get install cabal-install && cabal update```
 
-* Necessário instalar a lib hspec:
+* Necessário instalar a lib hspec, boxes e random:
 
+```cabal update```
 ```cabal install hspec```
+```cabal install boxes-0.1.5```
+```cabal install random```
 
 * Rodar na pasta raiz o seguinte comando para testar:
 
@@ -20,7 +23,9 @@ Este projeto tem como objetivo a implementação de um jogo Bomberman utilizando
 
 * Rodar na pasta raiz o seguinte comando para executar a Main:
 
-```stack run```
+```stack ghci```
+
+* Logo após isso basta digitar ```main``` para inicializar o jogo.
 
 ## Tabuleiro base para teste:
 

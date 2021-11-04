@@ -1,8 +1,14 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
+
+
 import Bomberman
 import System.Random.Shuffle ( shuffleM ) 
 import Data.Maybe ( fromMaybe, isNothing, fromJust )
+import Text.PrettyPrint.Boxes
+import Data.List (transpose, intercalate)
+
+print_table rows = printBox $ hsep 2 left (map (vcat left . map text) (transpose rows))
 
 --ghci -o trabalho app/Main.hs src/Bomberman.hs -package random-shuffle
 --main
@@ -21,21 +27,21 @@ looping tabuleiro jogadores = do
 
     --let jogador2 = (2, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_2, NADA, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
 
-    jogador <- shuffleM jogadores
+    jogadorSorteado <- shuffleM jogadores
 
-    print $ "Jogador: " ++ show jogador
+    print $ "Jogador: " ++ show jogadorSorteado
 
-    let identificacaoJogador = pegaQualÉOJogador (head jogador)
+    let identificacaoJogador = pegaQualÉOJogador (head jogadorSorteado)
 
     print $ "Identificador: " ++ show identificacaoJogador
 
-    move <- pegaMov [identificacaoJogador]
+    movimento <- pegaMov [identificacaoJogador]
 
-    let (j,op) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) move
-    print $ "(Jogador,Ação)" ++ show (j,op)
-    print $ "Operacao " ++ show op
+    let (j,operador) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) movimento
+    print $ "(Jogador,Ação)" ++ show (j,operador)
+    print $ "Operacao " ++ show operador
     
-    let direcao = converteAcaoEmDirecao op
+    let direcao = converteAcaoEmDirecao operador
 
     print $ "Direçao " ++ show direcao
 
@@ -47,20 +53,34 @@ looping tabuleiro jogadores = do
 
     let novoTabuleiro = movimentaJogadorNoTabuleiro tabuleiro identificacaoJogador localizacaoQueOJogadorEstá localizacaoQueOJogadorQuerIr itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
 
-    let jogadorAtualizado = atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula (head jogador) novoTabuleiro direcao itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
-
+    let jogadorAtualizado = atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula (head jogadorSorteado) novoTabuleiro direcao itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
+    
     let jogadoresAtualizados = ajustaJogadores jogadorAtualizado jogadores
 
+    print_table (imprimeLinhas novoTabuleiro)
     --let jogador1 = jogadorAtualizado
 
-    print $ "Novo Tabuleiro: " ++ show novoTabuleiro
+    --print $ "Novo Tabuleiro: " ++ show novoTabuleiro
     print $ "Jogador Atualizado: " ++show jogadorAtualizado
 
-    if op == SAIR then return () else looping novoTabuleiro jogadoresAtualizados
+    if operador == SAIR then return () else looping novoTabuleiro jogadoresAtualizados
+
 
 main :: IO ()
 main = do
-
+    print_table (imprimeLinhas tabuleiroVálido)
     looping tabuleiroVálido [jogador1, jogador2]
+    {--print $ "Novo Tabuleiro: " ++ show tabuleiroVálido
+    putStrLn $ tabl EnvAscii hdecor vdecor aligns cells 
+    where
+        hdecor = DecorUnion [DecorOuter, DecorOnly [1]]
+        vdecor = DecorAll
+        aligns = [AlignLeft, AlignLeft, AlignRight]
+        cells  = [ ["Name", "SI Unit", "Value"]
+                , ["Speed of light", "m/s", "299792458"]
+                , ["Atmosphere", "Pa", "101325"]
+                , ["Absolute zero", "C", "-273.15"] ]
+    --}
     
 
+    
