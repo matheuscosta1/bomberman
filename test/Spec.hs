@@ -177,9 +177,9 @@ spec = do
                 it "Converte item em string 2" $
                         convertItemIntoString PAREDE `shouldBe` "PAREDE"
         describe "Imprime Células" $ do
-                it "Converte item em string 2" $
+                it "Imprime Células" $
                         printaCélulas (getLinha tabuleiroVálido 2) `shouldBe` ["PEDRA","GRAMA","GRAMA","PRESENTE_PATINS","GRAMA","GRAMA","GRAMA","PEDRA"]
-        describe "Imprime Células" $ do
-                it "Converte item em string 2" $
+        describe "Imprime Linhas" $ do
+                it "Imprime Linhas" $
                         imprimeLinhas tabuleiroVálido `shouldBe` [["PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA"],["PEDRA","GRAMA","GRAMA","PRESENTE_PATINS","GRAMA","GRAMA","GRAMA","PEDRA"],["PEDRA","GRAMA","PEDRA","GRAMA","PEDRA","GRAMA","PAREDE","PEDRA"],["PEDRA","PRESENTE_ARREMESSO","GRAMA","BOMBA","PAREDE","GRAMA","JOGADOR_2","PEDRA"],["PEDRA","JOGADOR_1","PEDRA","PAREDE","PEDRA","GRAMA","GRAMA","PEDRA"],["PEDRA","PRESENTE_PATINS","GRAMA","GRAMA","GRAMA","PAREDE","GRAMA","PEDRA"],["PEDRA","BOMBA","GRAMA","JOGADOR_4","JOGADOR_3","GRAMA","GRAMA","PEDRA"],["PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA"]]
         
