@@ -12,8 +12,7 @@ Este projeto tem como objetivo a implementação de um jogo Bomberman utilizando
 
 * Necessário instalar a lib hspec, boxes e random:
 
-```cabal update```
-```cabal install hspec boxes-0.1.5 random```
+```cabal update && cabal install hspec boxes-0.1.5 random```
 
 * Rodar na pasta raiz o seguinte comando para testar:
 
