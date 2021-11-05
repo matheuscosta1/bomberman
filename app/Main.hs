@@ -1,9 +1,13 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 {-# OPTIONS_GHC -Wno-deferred-out-of-scope-variables #-}
 module Main where
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+--Integrantes:
 
---ghci -o trabalho app/Main.hs src/Bomberman.hs -package random-shuffle
+--Matheus José da Costa                   11711BCC008
+--Gustavo Melo do Carmo                   11721BCC035
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 import Bomberman
 import System.Random.Shuffle ( shuffleM )
@@ -20,8 +24,8 @@ ajustaJogadores jogadorAtualizado (x:xs) = if identificadorX == identificadorLis
         identificadorX = identificador jogadorAtualizado
         identificadorListaJogadores = identificador x
 
-move:: Tabuleiro -> [Jogador] -> [Jogador] -> Maybe (Item, Ação) -> Item -> IO()
-move tabuleiro jogadores jogadorSorteado movimento identificacaoJogador = do
+mover:: Tabuleiro -> [Jogador] -> [Jogador] -> Maybe (Item, Ação) -> Item -> IO()
+mover tabuleiro jogadores jogadorSorteado movimento identificacaoJogador = do
 
     let (j,operador) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) movimento
     putStr $ "\n\n(Jogador, Acao): " ++ show (j, operador)
@@ -94,7 +98,7 @@ loopingGame tabuleiro jogadores = do
     else
         case operador of
                         ColocarBomba   -> bomba tabuleiro jogadores jogadorSorteado movimento identificacaoJogador
-                        Mover _        -> move tabuleiro jogadores jogadorSorteado movimento identificacaoJogador
+                        Mover _        -> mover tabuleiro jogadores jogadorSorteado movimento identificacaoJogador
                         NO_OP          -> loopingGame tabuleiro jogadores
                         _              -> loopingGame tabuleiro jogadores
 
