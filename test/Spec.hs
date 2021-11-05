@@ -145,7 +145,7 @@ spec = do
                         movimentaJogadorNoTabuleiro tabuleiroVálido JOGADOR_1 (5,2) (4,2) [GRAMA, PRESENTE_ARREMESSO] `shouldBe` (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA,JOGADOR_2],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO,JOGADOR_4],[GRAMA,JOGADOR_3],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]))
         describe "Move jogador 1" $ do
                 it "Valida se quando o jogador 1 mover para o Leste ele deixa a sua posição (5,2) e assume uma nova (5,3) -- em que tem PEDRA -- dará erro que ele não pode se mover" $
-                        evaluate(movimentaJogadorNoTabuleiro tabuleiroVálido JOGADOR_1 (5,2) (5,3) [PEDRA]) `shouldThrow` errorCall "Jogador não pode se mover para a posição desejada"
+                        movimentaJogadorNoTabuleiro tabuleiroVálido JOGADOR_1 (5,2) (5,3) [PEDRA] `shouldBe` tabuleiroVálido
         describe "Atualiza jogador 1" $ do
                 it "Atualiza capacidades do jogador 1" $
                         atualizaJogador jogador1 tabuleiroVálido NORTE [(PRESENTE_ARREMESSO, 1)] `shouldBe` (1, (5,2), NORTE, [(PRESENTE_ARREMESSO, 1)])
@@ -155,6 +155,31 @@ spec = do
         describe "Fim de jogo" $ do
                 it "Valida se é fim de jogo" $
                         éFimDeJogo (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA])) `shouldBe` True
-
-
-                        
+        describe "Coloca bomba" $ do
+                it "Coloca bomba com movimento válido" $
+                        colocarBomba tabuleiroVálido (6,2) [GRAMA,PRESENTE_PATINS] SUL `shouldBe` (([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]),([PEDRA],[GRAMA],[GRAMA],[GRAMA,PRESENTE_PATINS],[GRAMA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA],[PEDRA],[GRAMA],[PEDRA],[GRAMA],[GRAMA,PAREDE],[PEDRA]),([PEDRA],[GRAMA,PRESENTE_ARREMESSO],[GRAMA],[GRAMA,BOMBA],[GRAMA,PAREDE],[GRAMA],[GRAMA,JOGADOR_2],[PEDRA]),([PEDRA],[GRAMA,JOGADOR_1],[PEDRA],[GRAMA,PAREDE],[PEDRA],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA],[GRAMA],[GRAMA,PAREDE],[GRAMA],[PEDRA]),([PEDRA],[GRAMA,BOMBA],[GRAMA],[GRAMA,PRESENTE_ARREMESSO,JOGADOR_4],[GRAMA,JOGADOR_3],[GRAMA],[GRAMA],[PEDRA]),([PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA],[PEDRA]))
+        describe "Coloca bomba" $ do
+                it "Coloca bomba com movimento inválido" $
+                        colocarBomba tabuleiroVálido (5,3) [PEDRA] LESTE `shouldBe` tabuleiroVálido
+        describe "Valida se pode colocar bomba" $ do
+                it "Valida se pode colocar bomba com movimento válido" $
+                        validaSeJogadorPodeColocarBomba [GRAMA, PRESENTE_PATINS] SUL `shouldBe` True
+        describe "Valida se pode colocar bomba" $ do
+                it "Valida se pode colocar bomba com movimento inválido 1" $
+                        validaSeJogadorPodeColocarBomba [PEDRA] SUL `shouldBe` False
+        describe "Valida se pode colocar bomba" $ do
+                it "Valida se pode colocar bomba com movimento inválido 2" $
+                        validaSeJogadorPodeColocarBomba [GRAMA, PRESENTE_PATINS] NADA `shouldBe` False
+        describe "Converte item em string" $ do
+                it "Converte item em string 1" $
+                        convertItemIntoString GRAMA `shouldBe` "GRAMA"
+        describe "Converte item em string" $ do
+                it "Converte item em string 2" $
+                        convertItemIntoString PAREDE `shouldBe` "PAREDE"
+        describe "Imprime Células" $ do
+                it "Converte item em string 2" $
+                        printaCélulas (getLinha tabuleiroVálido 2) `shouldBe` ["PEDRA","GRAMA","GRAMA","PRESENTE_PATINS","GRAMA","GRAMA","GRAMA","PEDRA"]
+        describe "Imprime Células" $ do
+                it "Converte item em string 2" $
+                        imprimeLinhas tabuleiroVálido `shouldBe` [["PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA"],["PEDRA","GRAMA","GRAMA","PRESENTE_PATINS","GRAMA","GRAMA","GRAMA","PEDRA"],["PEDRA","GRAMA","PEDRA","GRAMA","PEDRA","GRAMA","PAREDE","PEDRA"],["PEDRA","PRESENTE_ARREMESSO","GRAMA","BOMBA","PAREDE","GRAMA","JOGADOR_2","PEDRA"],["PEDRA","JOGADOR_1","PEDRA","PAREDE","PEDRA","GRAMA","GRAMA","PEDRA"],["PEDRA","PRESENTE_PATINS","GRAMA","GRAMA","GRAMA","PAREDE","GRAMA","PEDRA"],["PEDRA","BOMBA","GRAMA","JOGADOR_4","JOGADOR_3","GRAMA","GRAMA","PEDRA"],["PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA","PEDRA"]]
+        

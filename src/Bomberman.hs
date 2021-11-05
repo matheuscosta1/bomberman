@@ -398,29 +398,6 @@ movimentaJogadorNoTabuleiro tabuleiro identificacaoJogador (linhaQueOJogadorEst�
 
         resultado = tabuleiroComANovaPosicaoDoJogadorAtualizada
 
-
---todasAsPosicoesQueUmaBombaPodeAtingirDeAcordoComOLugarQueElaCaiu:: Tabuleiro -> Localizacao -> Int -> [Localizacao]
---todasAsPosicoesQueUmaBombaPodeAtingirDeAcordoComOLugarQueElaCaiu tabuleiro (linha, coluna) capacidade
-
-{--posicaoEmQueABombaIráCairDeAcordoComADireçãoECapacidadeDoJogador:: Tabuleiro -> Localizacao -> Direcao -> Int -> Localizacao
-posicaoEmQueABombaIráCairDeAcordoComADireçãoECapacidadeDoJogador tabuleiro (linha, coluna) direcao capacidade
-    | direcao == NORTE && éPedraOuparede = (linhaAtualizada-capacidade-1, colunaAtualizada)
-    | direcao == SUL && éPedraOuparede = (linhaAtualizada+capacidade-1, colunaAtualizada)
-    | direcao == LESTE && éPedraOuparede = (linhaAtualizada, colunaAtualizada+capacidade-1)
-    | direcao == OESTE && éPedraOuparede = (linhaAtualizada, colunaAtualizada-capacidade-1)
-    | otherwise = (linhaAtualizada, colunaAtualizada)
-    where
-        (linhaAtualizada, colunaAtualizada)
-          | direcao == NORTE = (if linha-capacidade < 0 then if linha-capacidade > else linha-capacidade , coluna)
-          | direcao == SUL = (linha+capacidade, coluna)
-          | direcao == LESTE = (linha, coluna+capacidade)
-          | otherwise = (linha, coluna-capacidade)
-        
-        itens = dadoCoordenadaPegarOsItens tabuleiro (linhaAtualizada, colunaAtualizada)
-        éPedraOuparede = éParedeOuPedra itens
---}
-
-
 pegaLocalizacaoJogador:: Tabuleiro -> Int -> Item -> Localizacao
 pegaLocalizacaoJogador tabuleiro iterador item
     | iterador == 8 && not(procuraItemNasColunas linha 0 item) = (-1,-1)

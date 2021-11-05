@@ -3,6 +3,7 @@
 {-# OPTIONS_GHC -Wno-deferred-out-of-scope-variables #-}
 module Main where
 
+--ghci -o trabalho app/Main.hs src/Bomberman.hs -package random-shuffle
 
 import Bomberman
 import System.Random.Shuffle ( shuffleM )
@@ -12,10 +13,6 @@ import Data.List (transpose, intercalate)
 
 print_table :: [[String]] -> IO ()
 print_table rows = printBox $ hsep 2 left (map (vcat left . map text) (transpose rows))
-
---ghci -o trabalho app/Main.hs src/Bomberman.hs -package random-shuffle
---main
-
 
 ajustaJogadores:: Jogador -> [Jogador] -> [Jogador]
 ajustaJogadores jogadorAtualizado (x:xs) = if identificadorX == identificadorListaJogadores then jogadorAtualizado:xs else x:ajustaJogadores jogadorAtualizado xs
