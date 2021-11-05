@@ -1,17 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-deferred-out-of-scope-variables #-}
 module Main where
 
 
 import Bomberman
-import System.Random.Shuffle ( shuffleM ) 
+import System.Random.Shuffle ( shuffleM )
 import Data.Maybe ( fromMaybe, isNothing, fromJust )
 import Text.PrettyPrint.Boxes
 import Data.List (transpose, intercalate)
 
+print_table :: [[String]] -> IO ()
 print_table rows = printBox $ hsep 2 left (map (vcat left . map text) (transpose rows))
 
 --ghci -o trabalho app/Main.hs src/Bomberman.hs -package random-shuffle
 --main
+
 
 ajustaJogadores:: Jogador -> [Jogador] -> [Jogador]
 ajustaJogadores jogadorAtualizado (x:xs) = if identificadorX == identificadorListaJogadores then jogadorAtualizado:xs else x:ajustaJogadores jogadorAtualizado xs
@@ -19,31 +23,13 @@ ajustaJogadores jogadorAtualizado (x:xs) = if identificadorX == identificadorLis
         identificadorX = identificador jogadorAtualizado
         identificadorListaJogadores = identificador x
 
-
-looping :: Tabuleiro -> [Jogador] -> IO()
-looping tabuleiro jogadores = do
-    print $ "Jogadores: " ++ show jogadores
-    --let jogador1 = (1, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_1, NADA, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
-
-    --let jogador2 = (2, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_2, NADA, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
-
-    jogadorSorteado <- shuffleM jogadores
-
-    print $ "Jogador: " ++ show jogadorSorteado
-
-    let identificacaoJogador = pegaQualÉOJogador (head jogadorSorteado)
-
-    print $ "Identificador: " ++ show identificacaoJogador
-
-    movimento <- pegaMov [identificacaoJogador]
+move:: Tabuleiro -> [Jogador] -> [Jogador] -> Maybe (Item, Ação) -> Item -> IO()
+move tabuleiro jogadores jogadorSorteado movimento identificacaoJogador = do
 
     let (j,operador) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) movimento
-    print $ "(Jogador,Ação)" ++ show (j,operador)
-    print $ "Operacao " ++ show operador
-    
-    let direcao = converteAcaoEmDirecao operador
+    putStr $ "\n\n(Jogador, Acao): " ++ show (j, operador)
 
-    print $ "Direçao " ++ show direcao
+    let direcao = converteAcaoEmDirecao operador
 
     let localizacaoQueOJogadorEstá = pegaLocalizacaoJogador tabuleiro 0 identificacaoJogador
 
@@ -54,23 +40,70 @@ looping tabuleiro jogadores = do
     let novoTabuleiro = movimentaJogadorNoTabuleiro tabuleiro identificacaoJogador localizacaoQueOJogadorEstá localizacaoQueOJogadorQuerIr itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
 
     let jogadorAtualizado = atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula (head jogadorSorteado) novoTabuleiro direcao itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
-    
+
     let jogadoresAtualizados = ajustaJogadores jogadorAtualizado jogadores
 
+    putStr $ "\n\n" ++ "Tabuleiro atualizado: \n\n"
     print_table (imprimeLinhas novoTabuleiro)
-    --let jogador1 = jogadorAtualizado
 
-    --print $ "Novo Tabuleiro: " ++ show novoTabuleiro
-    print $ "Jogador Atualizado: " ++show jogadorAtualizado
+    putStr $ "\nJogador Atualizado: " ++show jogadorAtualizado
 
-    if operador == SAIR then return () else looping novoTabuleiro jogadoresAtualizados
+    if operador == SAIR then return () else loopingGame novoTabuleiro jogadoresAtualizados
 
+
+bomba:: Tabuleiro -> [Jogador] -> [Jogador] -> Maybe (Item, Ação) -> Item -> IO()
+bomba tabuleiro jogadores jogadorSorteado movimento identificacaoJogador = do
+
+    let (j,operador) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) movimento
+    putStr $ "\n\n(Jogador, Acao): " ++ show (j, operador)
+
+    let direcaoJogador = direcao (head jogadorSorteado)
+
+    let localizacaoQueOJogadorEstá = pegaLocalizacaoJogador tabuleiro 0 identificacaoJogador
+
+    let localizacaoQueOJogadorQuerIr = pegaLocalizacaoQueOJogadorQuerIrBaseadoNaDirecao localizacaoQueOJogadorEstá direcaoJogador
+
+    let itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr = dadoCoordenadaPegarOsItens tabuleiro localizacaoQueOJogadorQuerIr
+
+    let novoTabuleiro = colocarBomba tabuleiro localizacaoQueOJogadorQuerIr itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr direcaoJogador
+
+    let jogadorAtualizado = atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula (head jogadorSorteado) novoTabuleiro direcaoJogador itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
+
+    let jogadoresAtualizados = ajustaJogadores jogadorAtualizado jogadores
+
+    putStr $ "\n\n" ++ "Tabuleiro atualizado: \n\n"
+
+    print_table (imprimeLinhas novoTabuleiro)
+
+    putStr $ "\nJogador Atualizado: " ++show jogadorAtualizado
+
+    loopingGame novoTabuleiro jogadoresAtualizados
+
+loopingGame :: Tabuleiro -> [Jogador] -> IO()
+loopingGame tabuleiro jogadores = do
+
+    jogadorSorteado <- shuffleM jogadores
+
+    let identificacaoJogador = pegaQualÉOJogador (head jogadorSorteado)
+
+    putStr $ "\n" ++ show identificacaoJogador ++ " possui a configuracao: \n\n" ++ show jogadorSorteado
+    putStr "\nMovimento: "
+
+    movimento <- pegaMovimento [identificacaoJogador]
+
+    let (j,operador) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) movimento
+
+    if operador == SAIR || éFimDeJogo tabuleiro then return ()
+    else
+        case operador of
+                        ColocarBomba   -> bomba tabuleiro jogadores jogadorSorteado movimento identificacaoJogador
+                        Mover _        -> move tabuleiro jogadores jogadorSorteado movimento identificacaoJogador
+                        NO_OP          -> loopingGame tabuleiro jogadores
+                        _              -> loopingGame tabuleiro jogadores
 
 main :: IO ()
 main = do
+    putStr $ "\n" ++ "Tabuleiro inicial: \n\n"
     print_table (imprimeLinhas tabuleiroVálido)
-    
-    looping tabuleiroVálido [jogador1, jogador2]
-    
 
-    
+    loopingGame tabuleiroVálido [jogador1, jogador2]

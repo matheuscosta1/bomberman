@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Bomberman where
 import Data.Maybe (fromMaybe)
 --import System.Random.Shuffle ( shuffleM ) 
@@ -37,8 +38,8 @@ mapKey c ((j,as):jas) = case mapKey' c as of Nothing -> mapKey c jas
             | c == c'   = Just a
             | otherwise = mapKey' c ms
 
-pegaMov :: [Item] -> IO (Maybe (Item,Ação))
-pegaMov js = do
+pegaMovimento :: [Item] -> IO (Maybe (Item,Ação))
+pegaMovimento js = do
         movChar <- getChar
         return (let mapped = mapKey movChar keyMaps
                 in case mapped of Nothing     -> Nothing
@@ -261,9 +262,6 @@ converteAcaoEmDirecao acao = case acao of
                                 Mover OESTE -> OESTE
                                 Mover LESTE -> LESTE
 
-n :: Ação
-n = error "not implemented"
-
 capacidade:: Jogador -> Capacidades
 capacidade (_,_,_,capacidade) = capacidade
 
@@ -277,24 +275,6 @@ jogador2:: Jogador
 jogador2 = (2, pegaLocalizacaoJogador tabuleiroVálido 0 JOGADOR_2, NADA, [(PRESENTE_PATINS, 0), (PRESENTE_ARREMESSO, 0)])
 
 jogadoresInicializados = [jogador1, jogador2]
-
-actionLoop :: Tabuleiro -> [Jogador] -> IO ()
-actionLoop t js =
-    let ids = [pegaQualÉOJogador i | i <- js]
-    in
-    do
-        move <- pegaMov ids
-        let (j,op) = fromMaybe (ITEM_NAO_ENCONTRADO,NO_OP) move
-        print $ "(Jogador,Ação)" ++ show (j,op)
-        if op == SAIR
-        then return ()
-        else let (t',js') = case op of
-                                --ColocarBomba   -> colocarBomba t js j
-                                --Agir           -> agir t js j
-                                --Mover d        -> mover d t js j
-                                NO_OP          -> (t,js)
-                                _              -> (t,js)
-             in actionLoop t' js'
 
 getLinha:: Tabuleiro -> Int -> Linha
 getLinha (linha,_,_,_,_,_,_,_) 1 = linha
@@ -340,6 +320,10 @@ adicionaJogadorNaNovaCelulaERemoveItens:: Célula -> Item -> Célula
 adicionaJogadorNaNovaCelulaERemoveItens [] jogador = []
 adicionaJogadorNaNovaCelulaERemoveItens (x:xs) jogador = x:[jogador]
 
+adicionaBomba:: Célula -> Célula
+adicionaBomba [] = []
+adicionaBomba (x:xs) = x:[BOMBA]
+
 atualizaCélulaNovaPosicaoDoJogador:: Linha -> Item -> Int ->  Linha
 atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 1 = (adicionaJogadorNaNovaCelulaERemoveItens celula1 jogador, celula2 , celula3, celula4, celula5, celula6, celula7, celula8)
 atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 2 = (celula1, adicionaJogadorNaNovaCelulaERemoveItens celula2 jogador, celula3, celula4, celula5, celula6, celula7, celula8)
@@ -350,10 +334,40 @@ atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5
 atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 7 = (celula1, celula2 , celula3, celula4, celula5, celula6, adicionaJogadorNaNovaCelulaERemoveItens celula7 jogador, celula8)
 atualizaCélulaNovaPosicaoDoJogador (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) jogador 8 = (celula1, celula2 , celula3, celula4, celula5, celula6, celula7, adicionaJogadorNaNovaCelulaERemoveItens celula8 jogador)
 
+atualizaCélulaBomba:: Linha -> Int ->  Linha
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 1 = (adicionaBomba celula1, celula2 , celula3, celula4, celula5, celula6, celula7, celula8)
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 2 = (celula1, adicionaBomba celula2, celula3, celula4, celula5, celula6, celula7, celula8)
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 3 = (celula1, celula2 , adicionaBomba celula3, celula4, celula5, celula6, celula7, celula8)
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 4 = (celula1, celula2 , celula3, adicionaBomba celula4, celula5, celula6, celula7, celula8)
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 5 = (celula1, celula2 , celula3, celula4, adicionaBomba celula5, celula6, celula7, celula8)
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 6 = (celula1, celula2 , celula3, celula4, celula5, adicionaBomba celula6, celula7, celula8)
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 7 = (celula1, celula2 , celula3, celula4, celula5, celula6, adicionaBomba celula7, celula8)
+atualizaCélulaBomba (celula1, celula2, celula3, celula4, celula5, celula6, celula7, celula8) 8 = (celula1, celula2 , celula3, celula4, celula5, celula6, celula7, adicionaBomba celula8)
+
+
 validaSeJogadorPodeMoverParaNovaPosição:: [Item] -> Bool
 validaSeJogadorPodeMoverParaNovaPosição itens
     |  BOMBA `elem` itens || PEDRA `elem` itens || PAREDE `elem` itens = False
     | otherwise = True
+
+validaSeJogadorPodeColocarBomba:: [Item] -> Direcao -> Bool
+validaSeJogadorPodeColocarBomba itens direcao
+    |  BOMBA `elem` itens || PEDRA `elem` itens || PAREDE `elem` itens || direcao == NADA = False
+    | otherwise = True
+
+
+colocarBomba:: Tabuleiro -> Localizacao -> [Item] -> Direcao -> Tabuleiro
+colocarBomba tabuleiro (linhaQueOJogadorQuerIr, colunaQueOJogadorQuerIr) itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr direcao
+    | not(validaSeJogadorPodeColocarBomba itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr direcao) = tabuleiro
+    | otherwise = resultado
+    where
+
+        linhaComABomba = getLinha tabuleiro linhaQueOJogadorQuerIr
+        novaLinhaComABomba = atualizaCélulaBomba linhaComABomba colunaQueOJogadorQuerIr
+
+        tabuleiroComANovaPosicaoDoJogadorAtualizada = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiro novaLinhaComABomba linhaQueOJogadorQuerIr
+
+        resultado = tabuleiroComANovaPosicaoDoJogadorAtualizada
 
 atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula:: Jogador -> Tabuleiro -> Direcao -> Célula -> Jogador
 atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula jogador tabuleiro direcao itens = resultado
@@ -368,7 +382,7 @@ atualizaCapacidadesDoJogadorDeAcordoComOsItensQueElePodePegarDaNovaCélula jogad
 
 movimentaJogadorNoTabuleiro:: Tabuleiro -> Item -> Localizacao -> Localizacao -> [Item] -> Tabuleiro
 movimentaJogadorNoTabuleiro tabuleiro identificacaoJogador (linhaQueOJogadorEstá, colunaQueOJogadorEstá) (linhaQueOJogadorQuerIr, colunaQueOJogadorQuerIr) itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr
-    | not(validaSeJogadorPodeMoverParaNovaPosição itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr) = error "Jogador não pode se mover para a posição desejada"
+    | not(validaSeJogadorPodeMoverParaNovaPosição itensQueEstaoNaNovaPosicaoQueOJogadorQuerIr) = tabuleiro
     | otherwise = resultado
     where
 
@@ -383,6 +397,7 @@ movimentaJogadorNoTabuleiro tabuleiro identificacaoJogador (linhaQueOJogadorEst�
         tabuleiroComANovaPosicaoDoJogadorAtualizada = montaNovoTabuleiroBaseadoNaNovaLinha tabuleiroComAPosicaoAntigaDoJogadorAtualizada novaLinhaComANovaPosicaoDoJogador linhaQueOJogadorQuerIr
 
         resultado = tabuleiroComANovaPosicaoDoJogadorAtualizada
+
 
 --todasAsPosicoesQueUmaBombaPodeAtingirDeAcordoComOLugarQueElaCaiu:: Tabuleiro -> Localizacao -> Int -> [Localizacao]
 --todasAsPosicoesQueUmaBombaPodeAtingirDeAcordoComOLugarQueElaCaiu tabuleiro (linha, coluna) capacidade
@@ -529,6 +544,7 @@ convertItemIntoString item
     | item == JOGADOR_5 = "JOGADOR_5"
     | otherwise = "JOGADOR_6"
 
+imprimeLinhas :: Tabuleiro -> [[String]]
 imprimeLinhas tabuleiro = final
     where
         linha1 = getLinha tabuleiro 1
@@ -541,6 +557,7 @@ imprimeLinhas tabuleiro = final
         linha8 = getLinha tabuleiro 8
         final = [printaCélulas linha1, printaCélulas linha2, printaCélulas linha3, printaCélulas linha4, printaCélulas linha5, printaCélulas linha6, printaCélulas linha7, printaCélulas linha8]
 
+printaCélulas :: Linha -> [String]
 printaCélulas linha =
     [convertItemIntoString (last (getCélula linha 1)), convertItemIntoString (last (getCélula linha 2)),
     convertItemIntoString (last (getCélula linha 3)), convertItemIntoString (last (getCélula linha 4)),
